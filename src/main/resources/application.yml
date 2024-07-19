@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: true
+
+cloud:
+  aws:
+    credentials:
+      access-Key: ${CLOUD_AWS_CREDENTIALS_ACCESS-KEY}
+      secret-Key: ${CLOUD_AWS_CREDENTIALS_SECRET-KEY}
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
