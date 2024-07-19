@@ -2,13 +2,17 @@ spring:
   profiles:
     active: prod
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
 =======
 >>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
   datasource:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
+<<<<<<< HEAD
 <<<<<<< HEAD
     driver-class-name: ${spring.datasource.driver-class-name}
 
@@ -28,6 +32,8 @@ logging:
 client-id: ${GOOGLE_CLIENT_ID}
 client-secret: ${GOOGLE_CLIENT_SECRET}
 =======
+=======
+>>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
@@ -50,5 +56,9 @@ cloud:
     region:
       static: ap-northeast-2
     stack:
+<<<<<<< HEAD
+      auto: false
+>>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
+=======
       auto: false
 >>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
