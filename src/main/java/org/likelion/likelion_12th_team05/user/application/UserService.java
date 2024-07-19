@@ -44,7 +44,7 @@ public class UserService {
 
     public UserSignInResDto userSignIn(UserSignInReqDto userSignUpReqDto) {
         User user = userRepository.findByEmail(userSignUpReqDto.email())
-                .orElseThrow(() -> new IllegalArgumentException("아이디나 패스워드가 일치하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("이메일이나 패스워드가 일치하지 않습니다."));
         String token = tokenProvider.generateToken(user.getEmail());
 //      String refreshToken = tokenProvider.refreshToken(user.getEmail());
 
