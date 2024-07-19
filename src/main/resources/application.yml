@@ -1,0 +1,54 @@
+spring:
+  profiles:
+    active: prod
+<<<<<<< HEAD
+
+=======
+>>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+<<<<<<< HEAD
+    driver-class-name: ${spring.datasource.driver-class-name}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.sql: warn
+    org.hibernate.type: trace
+client-id: ${GOOGLE_CLIENT_ID}
+client-secret: ${GOOGLE_CLIENT_SECRET}
+=======
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: true
+
+cloud:
+  aws:
+    credentials:
+      access-Key: ${CLOUD_AWS_CREDENTIALS_ACCESS-KEY}
+      secret-Key: ${CLOUD_AWS_CREDENTIALS_SECRET-KEY}
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+>>>>>>> dce2a109cf315073d1da63e9921ad05e95e84aaf
