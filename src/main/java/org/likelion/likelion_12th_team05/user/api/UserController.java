@@ -1,12 +1,12 @@
-package org.likelion.likelion_12th_team05.user.api.dto;
+package org.likelion.likelion_12th_team05.user.api;
 
 import jakarta.validation.Valid;
-import org.likelion.likelion_12th_team05.global.auth.template.RspTemplate;
+import org.likelion.likelion_12th_team05.common.error.SuccessCode;
+import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.application.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,15 +19,15 @@ public class UserController {
 
     // 자체 회원가입
     @PostMapping("/sign-up")
-    public RspTemplate<String> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
+    public ApiResponseTemplate<SuccessCode> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
         userService.userSignUp(userSignUpReqDto);
-        return new RspTemplate<>(HttpStatus.CREATED, "회원가입");
+        return ApiResponseTemplate.successWithNoContent(SuccessCode.USER_SIGNUP_SUCCESS);
     }
 
     // 자체 로그인
     @GetMapping("/sign-in")
-    private RspTemplate<UserSignInResDto> userSignIn(@RequestBody @Valid UserSignInReqDto userSignInReqDto) {
+    private ApiResponseTemplate<UserSignInResDto> userSignIn(@RequestBody @Valid UserSignInReqDto userSignInReqDto) {
         UserSignInResDto userSignInResDto = userService.userSignIn(userSignInReqDto);
-        return new RspTemplate<>(HttpStatus.OK, "로그인", userSignInResDto);
+        return ApiResponseTemplate.successResponse(userSignInResDto, SuccessCode.USER_LOGIN_SUCCESS);
     }
 }
