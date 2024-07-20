@@ -3,6 +3,8 @@ package org.likelion.likelion_12th_team05.user.api;
 import jakarta.validation.Valid;
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
+import org.likelion.likelion_12th_team05.global.auth.googleAuth.AuthLoginService;
+import org.likelion.likelion_12th_team05.global.auth.googleAuth.GoogleToken;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final AuthLoginService authLoginService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthLoginService authLoginService) {
         this.userService = userService;
+        this.authLoginService = authLoginService;
     }
 
     // 자체 회원가입
@@ -22,6 +26,16 @@ public class UserController {
     public ApiResponseTemplate<SuccessCode> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
         userService.userSignUp(userSignUpReqDto);
         return ApiResponseTemplate.successWithNoContent(SuccessCode.USER_SIGNUP_SUCCESS);
+    }
+
+    @GetMapping("/code/google")
+    public GoogleToken googleCallback(@RequestParam(name = "code") String code) {
+        String googleAccessToken = authLoginService.getGoogleAccessToken(code);
+        return signUpOrSignIn(googleAccessToken);
+    }
+
+    public GoogleToken signUpOrSignIn(String googleAccessToken) {
+        return authLoginService.signUpOrSignIn(googleAccessToken);
     }
 
     // 자체 로그인
