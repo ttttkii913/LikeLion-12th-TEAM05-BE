@@ -1,6 +1,5 @@
 package org.likelion.likelion_12th_team05.curation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.likelion.likelion_12th_team05.common.BaseTimeEntity;
 import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.location.domain.Location;
+import org.likelion.likelion_12th_team05.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +32,20 @@ public class Curation extends BaseTimeEntity {
     @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
-    //@OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder
-    public Curation(String name, String content) {
+    public Curation(String name, String content, User user) {
         this.name = name;
         this.content = content;
+        this.user = user;
     }
 
-    public void update(CurationUpdateReqDto curationUpdateReqDto) {
+    public void update(CurationUpdateReqDto curationUpdateReqDto, User user) {
         this.name = curationUpdateReqDto.name();
         this.content = curationUpdateReqDto.content();
+        this.user = user;
     }
 }
