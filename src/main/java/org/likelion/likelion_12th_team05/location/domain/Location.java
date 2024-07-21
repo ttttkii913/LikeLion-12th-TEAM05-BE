@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.likelion.likelion_12th_team05.curation.domain.Curation;
 import org.likelion.likelion_12th_team05.location.api.dto.request.LocationUpdateReqDto;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.likelion.likelion_12th_team05.user.domain.User;
 
 @Entity
 @Getter
@@ -18,6 +16,7 @@ import java.util.List;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "location_id")
     private Long id;
 
     @Column(name = "location_name", nullable = false)
@@ -35,22 +34,28 @@ public class Location {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "curtaion_id")
+    @JoinColumn(name = "curation_id")
     private Curation curation;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Location(String name, String description, String address, String locationImage, Curation curation) {
+    public Location(String name, String description, String address, String locationImage, Curation curation, User user) {
         this.name = name;
         this.description = description;
         this.address = address;
         this.locationImage = locationImage;
         this.curation = curation;
+        this.user = user;
     }
 
-    public void update(LocationUpdateReqDto locationUpdateReqDto) {
+    public void update(LocationUpdateReqDto locationUpdateReqDto, User user) {
         this.name = locationUpdateReqDto.name();
         this.description = locationUpdateReqDto.description();
         this.address = locationUpdateReqDto.address();
+        this.user = user;
     }
 
     public void updateImage(String locationImage) {
