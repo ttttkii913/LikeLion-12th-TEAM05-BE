@@ -10,12 +10,15 @@ import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationInfoR
 import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationListResDto;
 import org.likelion.likelion_12th_team05.curation.application.CurationService;
 import org.likelion.likelion_12th_team05.location.application.LocationService;
-import org.likelion.likelion_12th_team05.location.domain.Location;
+import org.likelion.likelion_12th_team05.user.application.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class CurationController {
 
     private final CurationService curationService;
     private final LocationService locationService;
+    private final UserService userService;
 
     // 큐레이션 지도 페이지 - 모든 사용자가 큐레이션 6개씩 조회 가능
     @GetMapping
@@ -49,22 +53,28 @@ public class CurationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // @Valid 추가 예정
     public ApiResponseTemplate<CurationInfoResDto> curationSave(@RequestBody CurationSaveReqDto curationSaveReqDto
-                                                                //, Principal principal
-                                                                ) {
-
-        CurationInfoResDto curationInfoResDto = curationService.curationSave(curationSaveReqDto);
+                                                                , Principal principal) throws IOException {
+        CurationInfoResDto curationInfoResDto = curationService.curationSave(curationSaveReqDto, principal);
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_SAVE_SUCCESS);
     }
 
-    // 큐레이션 지도 페이지 - 인증된 사용자가 큐레이션 이름, content 수정(일단 위치만), 삭제 가능
+    // 큐레이션 지도 페이지 - 인증된 사용자가 큐레이션 이름, content 수정, 삭제 가능
     @PatchMapping("/{curationId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<CurationInfoResDto> curationUpdate(@PathVariable("curationId") Long curationId,
-                                                                          @RequestBody CurationUpdateReqDto curationUpdateReqDto
-                                                                          //, Principal principal
-                                                                          ) {
-        CurationInfoResDto curationInfoResDto = curationService.curationUpdate(curationId, curationUpdateReqDto);
+                                                                  @RequestBody CurationUpdateReqDto curationUpdateReqDto
+                                                                    , Principal principal) {
+        CurationInfoResDto curationInfoResDto = curationService.curationUpdate(curationId, curationUpdateReqDto, principal);
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_UPDATE_SUCCESS);
+    }
+
+    // 인증된 사용자가 큐레이션 삭제
+    @DeleteMapping("/{curationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseTemplate<SuccessCode> curationDelete(@PathVariable("curationId") Long curationId,
+                                                           Principal principal) {
+        curationService.curationDelete(curationId, principal);
+        return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
     }
 
     // 큐레이션 지도 페이지 - 모든 사용자가 큐레이션 검색 가능(query="서울" 이런 식으로)
@@ -73,14 +83,6 @@ public class CurationController {
     public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query) {
         CurationListResDto searchResults = curationService.searchCurations(query);
         return ApiResponseTemplate.successResponse(searchResults, SuccessCode.GET_SUCCESS);
-    }
-
-    // 큐레이션 자체를 삭제 -- 필요한가?
-    @DeleteMapping("/{curationId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponseTemplate<SuccessCode> curationDelete(@PathVariable("curationId") Long curationId) {
-        curationService.curationDelete(curationId);
-        return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
     }
 
     // - 중, 조회-
