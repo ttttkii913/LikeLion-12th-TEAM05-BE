@@ -24,7 +24,7 @@ import java.util.List;
 public class JwtTokenProvider {
     private final UserRepository userRepository;
 
-    @Value("${token.expire.time}")
+    @Value("${jwt.access-token-validity-in-milliseconds}")
     private String tokenExpireTime;
 
     @Value("${jwt.secret}")

@@ -5,13 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.likelion.likelion_12th_team05.common.error.ErrorCode;
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

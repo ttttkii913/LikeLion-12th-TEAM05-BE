@@ -30,7 +30,7 @@ public class SecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/sign-up", "/sign-in","/sign-in/oauth2/**").permitAll()
+                        .requestMatchers("/sign-up/**", "/sign-in/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/user/**").hasRole("USER")
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
