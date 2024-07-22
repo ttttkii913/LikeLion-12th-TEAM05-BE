@@ -9,13 +9,15 @@ import java.time.LocalDate;
 public record CurationInfoResDto(
         Long id,
         String name,
-        String content
+        String content,
+        Integer likeCount
 ) {
     public static CurationInfoResDto from(Curation curation) {
         return CurationInfoResDto.builder()
                 .id(curation.getId())
                 .name(curation.getName())
                 .content(curation.getContent())
+                .likeCount(curation.getLikeCount())
                 .build();
     }
 }
