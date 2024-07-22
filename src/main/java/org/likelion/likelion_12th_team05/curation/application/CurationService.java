@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class CurationService {
 
     // 인증된 사용자 - 큐레이션 생성
     @Transactional
-    public CurationInfoResDto curationSave(CurationSaveReqDto curationSaveReqDto, Principal principal) throws IOException {
+    public CurationInfoResDto curationSave(CurationSaveReqDto curationSaveReqDto, Principal principal) {
         String email = principal.getName();
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
@@ -48,9 +47,8 @@ public class CurationService {
                 () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
                         , ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
 
-        Curation curation = curationRepository.findById(curationId)
-                .orElseThrow(
-                        () -> new NotFoundException(ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION
+        Curation curation = curationRepository.findById(curationId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION
                                 , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION.getMessage()));
 
         // 수정 권한 확인 -- 토큰 발급의 주체가 email이기에 email로 사용자 확인을 하였으나
