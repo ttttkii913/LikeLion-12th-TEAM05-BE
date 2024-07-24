@@ -16,7 +16,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     Optional<Curation> findById(Long curationId);
 
     // 좋아요 수 많은 순으로 큐레이션 6개만 조회 (limit => sql, Curation c -> Jpql 따라서 Curation c 라고 쓰면 조회 안 됨)
-    @Query(value = "SELECT * FROM Curation ORDER BY like_count DESC limit 6", nativeQuery = true)
+    @Query(value = "SELECT * FROM curation ORDER BY like_count DESC limit 6", nativeQuery = true)
     List<Curation> findTop6ByOrderByLikeCountDesc();
 
     // 최신순 조회
