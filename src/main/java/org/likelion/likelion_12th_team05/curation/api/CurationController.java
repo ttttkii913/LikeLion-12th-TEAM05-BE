@@ -1,5 +1,8 @@
 package org.likelion.likelion_12th_team05.curation.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
@@ -29,7 +32,12 @@ public class CurationController {
     private final LocationService locationService;
     private final UserService userService;
 
-    // 큐레이션 지도 페이지 - 모든 사용자가 큐레이션 6개씩 조회 가능
+    @Operation(summary = "모든 사용자가 큐레이션 6개씩 조회", description = "모든 사용자가 큐레이션을 6개씩 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
+    })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<CurationListResDto> curationFindAll (
@@ -49,7 +57,12 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
-    // 큐레이션 생성 페이지 - 인증된 사용자가 큐레이션 생성 가능
+    @Operation(summary = "인증된 사용자가 큐레이션 생성", description = "인증된 사용자가 큐레이션을 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // @Valid 추가 예정
     public ApiResponseTemplate<CurationInfoResDto> curationSave(@RequestBody CurationSaveReqDto curationSaveReqDto
@@ -58,7 +71,12 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_SAVE_SUCCESS);
     }
 
-    // 큐레이션 지도 페이지 - 인증된 사용자가 큐레이션 이름, content 수정, 삭제 가능
+    @Operation(summary = "인증된 사용자가 큐레이션 수정", description = "인증된 사용자가 큐레이션을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @PatchMapping("/{curationId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<CurationInfoResDto> curationUpdate(@PathVariable("curationId") Long curationId,
@@ -68,7 +86,12 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_UPDATE_SUCCESS);
     }
 
-    // 인증된 사용자가 큐레이션 삭제
+    @Operation(summary = "인증된 사용자가 큐레이션 삭제", description = "인증된 사용자가 큐레이션을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @DeleteMapping("/{curationId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<SuccessCode> curationDelete(@PathVariable("curationId") Long curationId,
@@ -77,7 +100,12 @@ public class CurationController {
         return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
     }
 
-    // 큐레이션 지도 페이지 - 모든 사용자가 큐레이션 검색 가능(query="서울" 이런 식으로)
+    @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 큐레이션을 검색합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
+    })
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query) {
