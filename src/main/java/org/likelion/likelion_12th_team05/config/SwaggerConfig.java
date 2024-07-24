@@ -15,8 +15,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Swaager API")
-                .description("Swagger API 테스트")
+                .title("Walk Mate Swagger API")
+                .description("Walk Mate Swagger API입니다.")
                 .version("1.0.0");
     }
 
