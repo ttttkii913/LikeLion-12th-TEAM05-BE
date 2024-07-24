@@ -55,18 +55,18 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-//    public String refreshToken(String email) {
-//        Date date = new Date();
-//
-//        Date expireDate = new Date(date.getTime() + Long.parseLong(tokenExpireTime) * 24);
-//
-//        return Jwts.builder()
-//                .setSubject(email)
-//                .setIssuedAt(date)
-//                .setExpiration(expireDate)
-//                .signWith(key, SignatureAlgorithm.HS256)
-//                .compact();
-//    }
+    public String refreshToken(String email) {
+        Date date = new Date();
+
+        Date expireDate = new Date(date.getTime() + Long.parseLong(tokenExpireTime) * 24 * 7);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(date)
+                .setExpiration(expireDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
     public boolean validateToken(String token) {
         // 토큰을 검증하는 부분

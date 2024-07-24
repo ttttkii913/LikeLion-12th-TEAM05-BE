@@ -23,9 +23,9 @@ public class UserController {
 
     // 자체 회원가입
     @PostMapping("/sign-up")
-    public ApiResponseTemplate<SuccessCode> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
+    public ApiResponseTemplate<String> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
         userService.userSignUp(userSignUpReqDto);
-        return ApiResponseTemplate.successWithNoContent(SuccessCode.USER_SIGNUP_SUCCESS);
+        return ApiResponseTemplate.successResponse(userSignUpReqDto.refreshToken(), SuccessCode.USER_SIGNUP_SUCCESS);
     }
 
     @GetMapping("/code/google")

@@ -12,6 +12,8 @@ public record UserSignInReqDto(
 
         @NotBlank(message = "비밀번호를 필수로 입력해야 합니다.")
         @Size(min = 8, message = "8자 이상 입력하세요.")
-        String password
+        String password,
+
+        String refreshToken
 ) {
 }

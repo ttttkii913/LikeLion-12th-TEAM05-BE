@@ -32,11 +32,13 @@ public class UserService {
         if (userRepository.existsByEmail(userSignUpReqDto.email())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
+
         User user = User.builder()
                 .name(userSignUpReqDto.name())
                 .email(userSignUpReqDto.email())
                 .password(passwordEncoder.encode(userSignUpReqDto.password()))
-                .role(Role.USER)
+                .refreshToken(tokenProvider.refreshToken(userSignUpReqDto.email()))
+                .role(Role.ROLE_USER)
                 .build();
 
         userRepository.save(user);
@@ -45,13 +47,12 @@ public class UserService {
     public UserSignInResDto userSignIn(UserSignInReqDto userSignUpReqDto) {
         User user = userRepository.findByEmail(userSignUpReqDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("이메일이나 패스워드가 일치하지 않습니다."));
-        String token = tokenProvider.generateToken(user.getEmail());
-//      String refreshToken = tokenProvider.refreshToken(user.getEmail());
+        String accessToken = tokenProvider.generateToken(user.getEmail());
 
         if (!passwordEncoder.matches(userSignUpReqDto.password(), user.getPassword())) {
             throw new IllegalArgumentException("이메일이나 패스워드가 일치하지 않습니다.");
         }
 
-        return UserSignInResDto.of(user, token);
+        return UserSignInResDto.of(user, accessToken);
     }
 }
