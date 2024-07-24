@@ -102,4 +102,14 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
+    // 모든 사용자 - 큐레이션 좋아요 많은 순으로 6개만 조회
+    @Transactional
+    public CurationListResDto findTop6ByOrderByLikeCountDesc() {
+        List<Curation> curations = curationRepository.findTop6ByOrderByLikeCountDesc();
+        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
+                .map(CurationInfoResDto::from)
+                .toList();
+        return CurationListResDto.from(curationInfoResDtoList);
+    }
+
 }
