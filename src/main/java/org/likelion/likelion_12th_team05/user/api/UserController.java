@@ -43,7 +43,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
     })
-    @GetMapping("/code/google")
+    @GetMapping("login/oauth2/code/google")
     public GoogleToken googleCallback(@RequestParam(name = "code") String code) {
         String googleAccessToken = authLoginService.getGoogleAccessToken(code);
         return signUpOrSignIn(googleAccessToken);
@@ -59,7 +59,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
     })
-    @GetMapping("/sign-in")
+    @PostMapping("/sign-in")
     private ApiResponseTemplate<UserSignInResDto> userSignIn(@RequestBody @Valid UserSignInReqDto userSignInReqDto) {
         UserSignInResDto userSignInResDto = userService.userSignIn(userSignInReqDto);
         return ApiResponseTemplate.successResponse(userSignInResDto, SuccessCode.USER_LOGIN_SUCCESS);

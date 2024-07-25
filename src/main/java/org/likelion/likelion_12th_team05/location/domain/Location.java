@@ -51,11 +51,10 @@ public class Location {
         this.user = user;
     }
 
-    public void update(LocationUpdateReqDto locationUpdateReqDto, User user) {
+    public void update(LocationUpdateReqDto locationUpdateReqDto) {
         this.name = locationUpdateReqDto.name();
         this.description = locationUpdateReqDto.description();
         this.address = locationUpdateReqDto.address();
-        this.user = user;
     }
 
     public void updateImage(String locationImage) {
