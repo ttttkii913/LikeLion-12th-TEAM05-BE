@@ -45,7 +45,7 @@ public class GoogleTokenProvider {
                 .setSubject(user.getEmail())
                 .claim(AUTHORITIES_KEY, user.getRole().name())
                 .setExpiration(tokenExpiredTime)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         return GoogleToken.builder()

@@ -62,7 +62,7 @@ public class AuthLoginService {
                 userRepository.save(User.builder()
                         .email(userInfo.getEmail())
                         .name(userInfo.getName())
-                        .role(Role.USER)
+                        .role(Role.ROLE_USER)
                         .build())
         );
         return googleTokenProvider.generateToken(user);
