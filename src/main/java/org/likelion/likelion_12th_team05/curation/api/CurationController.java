@@ -32,7 +32,7 @@ public class CurationController {
     private final LocationService locationService;
     private final UserService userService;
 
-    @Operation(summary = "모든 사용자가 큐레이션 6개씩 조회", description = "모든 사용자가 큐레이션을 6개씩 조회합니다.")
+    @Operation(summary = "모든 사용자가 큐레이션 6개씩 조회", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 한 페이지 당 6개씩 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -57,7 +57,7 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
-    @Operation(summary = "인증된 사용자가 큐레이션 생성", description = "인증된 사용자가 큐레이션을 생성합니다.")
+    @Operation(summary = "인증된 사용자가 큐레이션 생성", description = "인증된 사용자가 산책로 생성 페이지에서 큐레이션을 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -71,7 +71,7 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_SAVE_SUCCESS);
     }
 
-    @Operation(summary = "인증된 사용자가 큐레이션 수정", description = "인증된 사용자가 큐레이션을 수정(큐레이션 제목, 설명)합니다.")
+    @Operation(summary = "인증된 사용자가 큐레이션 수정", description = "인증된 사용자가 산책로 지도 페이지에서 큐레이션을 수정(큐레이션 제목, 설명)합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -100,7 +100,7 @@ public class CurationController {
         return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
     }
 
-    @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 큐레이션을 검색합니다.")
+    @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -113,10 +113,7 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(searchResults, SuccessCode.GET_SUCCESS);
     }
 
-    // - 중, 조회-
-    // 랜딩 페이지 - 게시글을 많이 작성한 5명의 큐레이터 조회 가능
-
-    @Operation(summary = "모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개 조회", description = "모든 사용자가 좋아요 순으로 정렬된 큐레이션을 조회합니다.")
+    @Operation(summary = "모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개 조회", description = "모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 6개의 큐레이션을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -128,4 +125,17 @@ public class CurationController {
         CurationListResDto curationListResDto = curationService.findTop6ByOrderByLikeCountDesc();
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
+
+    @Operation(summary = "모든 사용자가 최신순으로 정렬된 큐레이션 6개 조회", description = "모든 사용자가 랜딩페이지에서 최신순으로 정렬된 6개의 큐레이션을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
+    })
+    @GetMapping("/recent")
+    public ApiResponseTemplate<CurationListResDto> findTop6byOrderByCreateDateDesc() {
+        CurationListResDto curationListResDto = curationService.findTop6byOrderByCreateDateDesc();
+        return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
+    }
+
 }
