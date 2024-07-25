@@ -1,6 +1,7 @@
 package org.likelion.likelion_12th_team05.curation.application;
 
 import lombok.RequiredArgsConstructor;
+import org.likelion.likelion_12th_team05.common.EntityFinder;
 import org.likelion.likelion_12th_team05.common.error.ErrorCode;
 import org.likelion.likelion_12th_team05.common.exception.NotFoundException;
 import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
@@ -29,10 +30,9 @@ public class CurationService {
     // 인증된 사용자 - 큐레이션 생성
     @Transactional
     public CurationInfoResDto curationSave(CurationSaveReqDto curationSaveReqDto, Principal principal) {
-        String email = principal.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
-                        , ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
+        Long id = Long.parseLong(principal.getName());  // user repo에서 userId로 바꿔야 함
+        User user = getUserById(id);
+
         Curation curation = curationSaveReqDto.toEntity(user);
         curationRepository.save(curation);
 
@@ -42,19 +42,15 @@ public class CurationService {
     // 인증된 사용자 - 큐레이션 수정
     @Transactional
     public CurationInfoResDto curationUpdate(Long curationId, CurationUpdateReqDto curationUpdateReqDto, Principal principal) {
-        String email = principal.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
-                        , ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
+        Long id = Long.parseLong(principal.getName());  // user repo에서 userId로 바꿔야 함
+        User user = getUserById(id);
 
-        Curation curation = curationRepository.findById(curationId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION
-                                , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION.getMessage()));
+        Curation curation = getCurationById(curationId);
 
         // 수정 권한 확인 -- 토큰 발급의 주체가 email이기에 email로 사용자 확인을 하였으나
-        // userid로 판단 하는 것이 더 좋지 않을까 생각함. 일단 crud와 로그인 연결 테스트를 위해 email로 테스트 함 -- 상의 필요
-        String LoginEmail = principal.getName();
-        if (!email.equals(LoginEmail)) {
+        // userid로 판단 하는 것이 더 좋지 않을까 생각함. 일단 crud와 로그인 연결 테스트를 위해 email로 테스트 함 -> 테스트 성공 -> userId로 바꾸기로 함
+        String LoginId = principal.getName();
+        if (!id.equals(LoginId)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
@@ -67,8 +63,7 @@ public class CurationService {
     // 인증된 사용자 - 큐레이션 삭제
     @Transactional
     public void curationDelete(Long curationId, Principal principal) {
-        Curation curation = curationRepository.findById(curationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 큐레이션이 없습니다. id=" + curationId));
+        Curation curation = getCurationById(curationId);
 
         // 삭제 권한 확인
         Long id = Long.parseLong(principal.getName());
@@ -102,7 +97,7 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
-    // 모든 사용자 - 큐레이션 좋아요 많은 순으로 6개만 조회
+    // 모든 사용자 - 랜딩 페이지 - 큐레이션 좋아요 많은 순으로 6개만 조회
     @Transactional
     public CurationListResDto findTop6ByOrderByLikeCountDesc() {
         List<Curation> curations = curationRepository.findTop6ByOrderByLikeCountDesc();
@@ -112,4 +107,24 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
+    // 모든 사용자 - 랜딩페이지 - 큐레이션 최신(createDate desc) 순으로 6개만 조회
+    @Transactional
+    public CurationListResDto findTop6byOrderByCreateDateDesc() {
+        List<Curation> curations = curationRepository.findTop6byOrderByCreateDateDesc();
+        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
+                .map(CurationInfoResDto::from)
+                .toList();
+        return CurationListResDto.from(curationInfoResDtoList);
+    }
+
+    // 반복되는 예외 반환 메서드 추출 => 공통 예외 처리로 일관성 높이기 위함 => entityfinder로 중앙 관리
+    private Curation getCurationById(Long curationId) {
+        return EntityFinder.findByIdOrThrow(curationRepository.findById(curationId)
+                , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
+    }
+
+    private User getUserById(Long userId) {
+        return EntityFinder.findByIdOrThrow(userRepository.findById(userId)
+                , ErrorCode.USER_NOT_FOUND_EXCEPTION);
+    }
 }
