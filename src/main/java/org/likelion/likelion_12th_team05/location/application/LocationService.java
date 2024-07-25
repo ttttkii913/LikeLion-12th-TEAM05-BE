@@ -1,6 +1,7 @@
 package org.likelion.likelion_12th_team05.location.application;
 
 import lombok.RequiredArgsConstructor;
+import org.likelion.likelion_12th_team05.common.EntityFinder;
 import org.likelion.likelion_12th_team05.common.error.ErrorCode;
 import org.likelion.likelion_12th_team05.common.exception.NotFoundException;
 import org.likelion.likelion_12th_team05.curation.domain.Curation;
@@ -36,13 +37,9 @@ public class LocationService {
     public LocationInfoResDto locationSave(LocationSaveReqDto locationSaveReqDto, MultipartFile multipartFile
                                                     , Long curationId, Principal principal) throws IOException {
         Long id = Long.parseLong(principal.getName());
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
-                        , ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
+        User user = getUserById(id);
 
-        Curation curation = curationRepository.findById(curationId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION
-                , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION.getMessage()));
+        Curation curation = getCurationById(curationId);
 
         String locationImage = s3Service.upload(multipartFile, "location");
 
@@ -69,23 +66,18 @@ public class LocationService {
     @Transactional
     public LocationInfoResDto locationUpdate(Long locationId, LocationUpdateReqDto locationUpdateReqDto
                                             , MultipartFile locationImage, Principal principal) throws IOException {
-        Long id = Long.parseLong(principal.getName());
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION
-                        , ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
-
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow( ()-> new NotFoundException(ErrorCode.LOCATIONS_NOT_FOUND_EXCEPTION
-                        , ErrorCode.LOCATIONS_NOT_FOUND_EXCEPTION.getMessage()));
-        location.update(locationUpdateReqDto, user);
+        Location location = getLocationById(locationId);
 
         // 수정 권한 확인
+        Long id = location.getUser().getId();
         Long LoginId = Long.parseLong(principal.getName());
 
         if (!id.equals(LoginId)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
+
+        location.update(locationUpdateReqDto);
 
         // 이미지가 있을 경우 S3에 업로드하고 URL 업데이트
         if (locationImage != null && !locationImage.isEmpty()) {
@@ -99,12 +91,9 @@ public class LocationService {
     // 인증된 사용자 - 위치 삭제
     @Transactional
     public void locationDelete(Long locationId, Principal principal) {
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow( ()-> new NotFoundException(ErrorCode.LOCATIONS_NOT_FOUND_EXCEPTION
-                        , ErrorCode.LOCATIONS_NOT_FOUND_EXCEPTION.getMessage()));
-
+        Location location = getLocationById(locationId);
         // 삭제 권한 확인
-        Long id = Long.parseLong(principal.getName());
+        Long id = location.getUser().getId();
         Long LoginId = Long.parseLong(principal.getName());
 
         if (!id.equals(LoginId)) {
@@ -113,5 +102,22 @@ public class LocationService {
         }
 
         locationRepository.delete(location);
+    }
+
+    // 반복되는 예외 반환 메서드 추출 => 공통 예외 처리로 일관성 높이기 위함 => entityfinder로 중앙 관리
+    private Curation getCurationById(Long curationId) {
+        return EntityFinder.findByIdOrThrow(curationRepository.findById(curationId)
+                , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
+    }
+
+    private User getUserById(Long userId) {
+        return EntityFinder.findByIdOrThrow(userRepository.findById(userId)
+                , ErrorCode.USER_NOT_FOUND_EXCEPTION);
+
+    }
+
+    private Location getLocationById(Long locationId) {
+        return EntityFinder.findByIdOrThrow(locationRepository.findById(locationId)
+                , ErrorCode.LOCATIONS_NOT_FOUND_EXCEPTION);
     }
 }
