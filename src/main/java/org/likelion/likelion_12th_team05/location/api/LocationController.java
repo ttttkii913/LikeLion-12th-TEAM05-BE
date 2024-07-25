@@ -1,5 +1,8 @@
 package org.likelion.likelion_12th_team05.location.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
@@ -25,7 +28,12 @@ public class LocationController {
     private final LocationService locationService;
     private final CurationService curationService;
 
-    // 인증된 사용자 - 내가 지도에서 고른 위치 모두 보기
+    @Operation(summary = "인증된 사용자가 고른 위치 조회", description = "인증된 사용자가 고른 위치를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<LocationListResDto> locationFindAll(Principal principal) {
@@ -33,7 +41,12 @@ public class LocationController {
         return ApiResponseTemplate.successResponse(locationListResDto, SuccessCode.GET_SUCCESS);
     }
 
-    // 인증된 사용자 - 위치 생성 - 위치 이름 + 산책로 설명 + 사진 저장
+    @Operation(summary = "인증된 사용자가 위치 생성", description = "인증된 사용자가 위치를 생성(큐레이션 id, 위치 이름, 이미지)합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @PostMapping(value = "/{curationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<LocationInfoResDto> locationSave(@RequestPart("location") LocationSaveReqDto locationSaveReqDto,
@@ -44,7 +57,12 @@ public class LocationController {
         return ApiResponseTemplate.successResponse(locationInfoResDto, SuccessCode.LOCATION_SAVE_SUCCESS);
     }
 
-    // 인증된 사용자 - 산책로 수정 - 산책로 설명 + 사진 수정
+    @Operation(summary = "인증된 사용자가 위치 수정", description = "인증된 사용자가 위치를 수정(위치 이름, 이미지)합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @PatchMapping(value = "/{locationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<LocationInfoResDto> locationUpdate(@PathVariable("locationId") Long locationId,
@@ -55,7 +73,12 @@ public class LocationController {
         return ApiResponseTemplate.successResponse(locationInfoResDto, SuccessCode.LOCATION_UPDATE_SUCCESS);
     }
 
-    // 인증된 사용자 - 산책로 삭제 - 아예 장소를 삭제
+    @Operation(summary = "인증된 사용자가 위치 삭제", description = "인증된 사용자가 위치를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
     @DeleteMapping("/{locationId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<String> locationDelete(@PathVariable("locationId") Long locationId, Principal principal) {
