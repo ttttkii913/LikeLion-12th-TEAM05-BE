@@ -1,5 +1,5 @@
 package org.likelion.likelion_12th_team05.user.domain;
 
 public enum Role {
-    USER
+    ROLE_USER
 }

@@ -24,9 +24,12 @@ public class User {
     private String name;
     private String email;
     private String password;
+
+    private String accessToken;
+    private String refreshToken;
+
+    @Enumerated(value = EnumType.STRING)
     private Role role;
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Curation> curations = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curation> curations = new ArrayList<>();
@@ -38,10 +41,12 @@ public class User {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    private User(String name, String email, String password, Role role){
+    private User(String name, String email, String password, String accessToken, String refreshToken, Role role){
         this.name = name;
         this.email = email;
         this.password = password;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.role = role;
     }
 }
