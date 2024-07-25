@@ -5,6 +5,7 @@ import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.AuthLoginService;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.GoogleToken;
+import org.likelion.likelion_12th_team05.global.auth.jwt.TokenDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
@@ -23,8 +24,8 @@ public class UserController {
 
     // 자체 회원가입
     @PostMapping("/sign-up")
-    public ApiResponseTemplate<String> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto) {
-        userService.userSignUp(userSignUpReqDto);
+    public ApiResponseTemplate<String> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto, TokenDto tokenDto) {
+        userService.userSignUp(userSignUpReqDto, tokenDto);
         return ApiResponseTemplate.successResponse(userSignUpReqDto.refreshToken(), SuccessCode.USER_SIGNUP_SUCCESS);
     }
 

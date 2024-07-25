@@ -47,12 +47,14 @@ public class JwtTokenProvider {
 
         Date expireDate = new Date(date.getTime() + Long.parseLong(tokenExpireTime));
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(date)
                 .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        return accessToken;
     }
 
     public String refreshToken(String email) {
@@ -60,12 +62,14 @@ public class JwtTokenProvider {
 
         Date expireDate = new Date(date.getTime() + Long.parseLong(tokenExpireTime) * 24 * 7);
 
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(date)
                 .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        return refreshToken;
     }
 
     public boolean validateToken(String token) {

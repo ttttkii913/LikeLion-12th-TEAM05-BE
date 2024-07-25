@@ -2,6 +2,7 @@ package org.likelion.likelion_12th_team05.user.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.likelion.likelion_12th_team05.global.auth.jwt.JwtTokenProvider;
+import org.likelion.likelion_12th_team05.global.auth.jwt.TokenDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
@@ -28,7 +29,7 @@ public class UserService {
 
     // 회원가입
     @Transactional
-    public void userSignUp(UserSignUpReqDto userSignUpReqDto) {
+    public void userSignUp(UserSignUpReqDto userSignUpReqDto, TokenDto tokenDto) {
         if (userRepository.existsByEmail(userSignUpReqDto.email())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
@@ -37,7 +38,8 @@ public class UserService {
                 .name(userSignUpReqDto.name())
                 .email(userSignUpReqDto.email())
                 .password(passwordEncoder.encode(userSignUpReqDto.password()))
-                .refreshToken(tokenProvider.refreshToken(userSignUpReqDto.email()))
+                .accessToken(tokenDto.accessToken())
+                .refreshToken(tokenDto.refreshToken())
                 .role(Role.ROLE_USER)
                 .build();
 
@@ -48,11 +50,12 @@ public class UserService {
         User user = userRepository.findByEmail(userSignUpReqDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("이메일이나 패스워드가 일치하지 않습니다."));
         String accessToken = tokenProvider.generateToken(user.getEmail());
+        String refreshToken = tokenProvider.refreshToken(user.getEmail());
 
         if (!passwordEncoder.matches(userSignUpReqDto.password(), user.getPassword())) {
             throw new IllegalArgumentException("이메일이나 패스워드가 일치하지 않습니다.");
         }
 
-        return UserSignInResDto.of(user, accessToken);
+        return UserSignInResDto.of(user, accessToken, refreshToken);
     }
 }
