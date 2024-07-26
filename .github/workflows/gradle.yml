@@ -59,5 +59,5 @@ jobs:
         aws deploy create-deployment \
           --application-name walkmate-deploy \
           --deployment-group-name walkmate-deploy-group \
-          --s3-location bucket=likelion0702821,key=likelion0702821.zip,bundleType=zip \
+          --s3-location bucket=likelion0702821,key=walkmate.zip,bundleType=zip \
           --region ap-northeast-2
