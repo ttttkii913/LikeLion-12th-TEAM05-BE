@@ -30,8 +30,8 @@ public class CurationService {
     // 인증된 사용자 - 큐레이션 생성
     @Transactional
     public CurationInfoResDto curationSave(CurationSaveReqDto curationSaveReqDto, Principal principal) {
-        Long id = Long.parseLong(principal.getName());  // user repo에서 userId로 바꿔야 함
-        User user = getUserById(id);
+        String email = principal.getName();
+        User user = getUserByEmail(email);
 
         Curation curation = curationSaveReqDto.toEntity(user);
         curationRepository.save(curation);
@@ -42,15 +42,14 @@ public class CurationService {
     // 인증된 사용자 - 큐레이션 수정
     @Transactional
     public CurationInfoResDto curationUpdate(Long curationId, CurationUpdateReqDto curationUpdateReqDto, Principal principal) {
-        Long id = Long.parseLong(principal.getName());  // user repo에서 userId로 바꿔야 함
-        User user = getUserById(id);
+        String email = principal.getName();
+        User user = getUserByEmail(email);
 
         Curation curation = getCurationById(curationId);
 
-        // 수정 권한 확인 -- 토큰 발급의 주체가 email이기에 email로 사용자 확인을 하였으나
-        // userid로 판단 하는 것이 더 좋지 않을까 생각함. 일단 crud와 로그인 연결 테스트를 위해 email로 테스트 함 -> 테스트 성공 -> userId로 바꾸기로 함
-        String LoginId = principal.getName();
-        if (!id.equals(LoginId)) {
+        // 큐레이션 작성자 이메일과 일치하는지 확인 - 수정 권한 확인
+        String CurationUserEmail = curation.getUser().getEmail();
+        if (!email.equals(CurationUserEmail)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
@@ -65,11 +64,11 @@ public class CurationService {
     public void curationDelete(Long curationId, Principal principal) {
         Curation curation = getCurationById(curationId);
 
-        // 삭제 권한 확인
-        Long id = Long.parseLong(principal.getName());
-        Long LoginId = Long.parseLong(principal.getName());
+        // 큐레이션 작성자 이메일과 일치하는지 확인 - 삭제 권한 확인
+        String email = principal.getName();
+        String CurationUserEmail = curation.getUser().getEmail();
 
-        if (!id.equals(LoginId)) {
+        if (!email.equals(CurationUserEmail)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
@@ -123,8 +122,8 @@ public class CurationService {
                 , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
     }
 
-    private User getUserById(Long userId) {
-        return EntityFinder.findByIdOrThrow(userRepository.findById(userId)
+    private User getUserByEmail(String email) {
+        return EntityFinder.findByEmailOrThrow(userRepository.findByEmail(email)
                 , ErrorCode.USER_NOT_FOUND_EXCEPTION);
     }
 }

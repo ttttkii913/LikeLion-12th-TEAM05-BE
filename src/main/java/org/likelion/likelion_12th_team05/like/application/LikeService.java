@@ -29,8 +29,8 @@ public class LikeService {
     public void likeSave(@PathVariable("curationId") Long curationId, Principal principal) {
         Curation curation = getCurationById(curationId);
 
-        Long id = Long.parseLong(principal.getName());
-        User user = getUserById(id);
+        String email = principal.getName();
+        User user = getUserByEmail(email);
 
         Like like = Like.of(curation, user);
         likeRepository.save(like);
@@ -45,8 +45,8 @@ public class LikeService {
     public void likeDelete(@PathVariable("curationId") Long curationId, Principal principal) {
         Curation curation = getCurationById(curationId);
 
-        Long id = Long.parseLong(principal.getName());
-        User user = getUserById(id);
+        String email = principal.getName();
+        User user = getUserByEmail(email);
 
         // 큐레이션에 좋아요가 존재하는지 확인
         List<Like> existingLikes = likeRepository.findByCurationAndUser(curation, user);
@@ -68,8 +68,8 @@ public class LikeService {
                 , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
     }
 
-    private User getUserById(Long userId) {
-        return EntityFinder.findByIdOrThrow(userRepository.findById(userId)
+    private User getUserByEmail(String email) {
+        return EntityFinder.findByEmailOrThrow(userRepository.findByEmail(email)
                 , ErrorCode.USER_NOT_FOUND_EXCEPTION);
     }
 }
