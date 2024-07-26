@@ -12,4 +12,9 @@ public class EntityFinder {
         return optionalEntity.orElseThrow(() ->
                 new NotFoundException(errorCode, errorCode.getMessage()));
     }
+
+    public static <T> T findByEmailOrThrow(Optional<T> optionalEntity, ErrorCode errorCode) {
+        return optionalEntity.orElseThrow(() ->
+                new NotFoundException(errorCode, errorCode.getMessage()));
+    }
 }
