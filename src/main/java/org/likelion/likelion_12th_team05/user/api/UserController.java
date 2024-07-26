@@ -34,7 +34,7 @@ public class UserController {
     @PostMapping("/sign-up")
     public ApiResponseTemplate<String> userSignUp(@RequestBody @Valid UserSignUpReqDto userSignUpReqDto, TokenDto tokenDto) {
         userService.userSignUp(userSignUpReqDto, tokenDto);
-        return ApiResponseTemplate.successResponse(userSignUpReqDto.refreshToken(), SuccessCode.USER_SIGNUP_SUCCESS);
+        return ApiResponseTemplate.successResponse(userSignUpReqDto.accessToken(), SuccessCode.USER_SIGNUP_SUCCESS);
     }
 
     @Operation(summary = "구글 로그인", description = "구글 로그인")
