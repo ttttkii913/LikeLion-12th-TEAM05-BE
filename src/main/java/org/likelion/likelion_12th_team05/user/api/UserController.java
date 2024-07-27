@@ -8,12 +8,15 @@ import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.AuthLoginService;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.GoogleToken;
-import org.likelion.likelion_12th_team05.global.auth.jwt.JwtTokenProvider;
+import org.likelion.likelion_12th_team05.user.api.dto.request.UserInfoUpdateReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
+import org.likelion.likelion_12th_team05.user.api.dto.response.UserInfoResDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.application.UserService;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 public class UserController {
@@ -63,5 +66,17 @@ public class UserController {
     private ApiResponseTemplate<UserSignInResDto> userSignIn(@RequestBody @Valid UserSignInReqDto userSignInReqDto) {
         UserSignInResDto userSignInResDto = userService.userSignIn(userSignInReqDto);
         return ApiResponseTemplate.successResponse(userSignInResDto, SuccessCode.USER_LOGIN_SUCCESS);
+    }
+
+    @Operation(summary = "사용자 정보 수정", description = "사용자의 정보(이름, 이메일, 비밀번호)를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
+    @PatchMapping("/user/info")
+    private ApiResponseTemplate<UserInfoResDto> userInfoUpdate(@RequestBody @Valid UserInfoUpdateReqDto userInfoUpdateReqDto, Principal principal) {
+        UserInfoResDto userInfoResDto = userService.userInfoUpdate(userInfoUpdateReqDto, principal);
+        return ApiResponseTemplate.successResponse(userInfoResDto, SuccessCode.USER_INFO_UPDATE_SUCCESS);
     }
 }

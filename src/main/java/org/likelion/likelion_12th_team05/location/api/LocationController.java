@@ -50,14 +50,14 @@ public class LocationController {
     @PostMapping(value = "/{curationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<LocationInfoResDto> locationSave(@RequestPart("location") LocationSaveReqDto locationSaveReqDto,
-                                                                @RequestPart("locationImage") MultipartFile locationImage,
+                                                                @RequestParam(value = "locationImage", required=false) MultipartFile locationImage,
                                                                 @PathVariable("curationId") Long curationId,
                                                                 Principal principal) throws IOException {
         LocationInfoResDto locationInfoResDto = locationService.locationSave(locationSaveReqDto, locationImage, curationId, principal);
         return ApiResponseTemplate.successResponse(locationInfoResDto, SuccessCode.LOCATION_SAVE_SUCCESS);
     }
 
-    @Operation(summary = "인증된 사용자가 위치 수정", description = "인증된 사용자가 위치를 수정(위치 이름, 이미지)합니다.")
+    @Operation(summary = "인증된 사용자가 위치 수정", description = "인증된 사용자가 위치를 수정(위치 이름, 이미지(선택), 주소)합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -67,7 +67,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseTemplate<LocationInfoResDto> locationUpdate(@PathVariable("locationId") Long locationId,
                                                                   @RequestPart("location") LocationUpdateReqDto locationUpdateReqDto,
-                                                                  @RequestPart("locationImage") MultipartFile locationImage,
+                                                                  @RequestParam(value = "locationImage", required = false) MultipartFile locationImage,
                                                                   Principal principal) throws IOException {
         LocationInfoResDto locationInfoResDto = locationService.locationUpdate(locationId, locationUpdateReqDto, locationImage, principal);
         return ApiResponseTemplate.successResponse(locationInfoResDto, SuccessCode.LOCATION_UPDATE_SUCCESS);
