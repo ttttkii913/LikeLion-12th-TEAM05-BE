@@ -9,5 +9,5 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
     List<Location> findByCurationId(Long curationId);
-    List<Location> findByUserId(Long UserId);
+    List<Location> findByUserEmail(String email);
 }

@@ -36,10 +36,16 @@ public class LocationService {
     @Transactional
     public LocationInfoResDto locationSave(LocationSaveReqDto locationSaveReqDto, MultipartFile multipartFile
                                                     , Long curationId, Principal principal) throws IOException {
-        Long id = Long.parseLong(principal.getName());
-        User user = getUserById(id);
+        String email = principal.getName();
+        User user = getUserByEmail(email);
 
         Curation curation = getCurationById(curationId);
+
+        String CurationUserEmail = curation.getUser().getEmail();
+        if (!email.equals(CurationUserEmail)) {
+            throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
+                    , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
+        }
 
         String locationImage = s3Service.upload(multipartFile, "location");
 
@@ -52,9 +58,9 @@ public class LocationService {
     // 인증된 사용자 - 고른 위치 조회
     @Transactional
     public LocationListResDto locationFindAll(Principal principal) {
-        Long id = Long.parseLong(principal.getName());
+        String email = principal.getName();
 
-        List<Location> locations = locationRepository.findByUserId(id);
+        List<Location> locations = locationRepository.findByUserEmail(email);
 
         List<LocationInfoResDto> locationInfoResDtoList = locations.stream()
                 .map(LocationInfoResDto::from)
@@ -69,10 +75,10 @@ public class LocationService {
         Location location = getLocationById(locationId);
 
         // 수정 권한 확인
-        Long id = location.getUser().getId();
-        Long LoginId = Long.parseLong(principal.getName());
+        String email = principal.getName();
+        String LocationUserEmail = location.getUser().getEmail();
 
-        if (!id.equals(LoginId)) {
+        if (!email.equals(LocationUserEmail)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
@@ -93,10 +99,10 @@ public class LocationService {
     public void locationDelete(Long locationId, Principal principal) {
         Location location = getLocationById(locationId);
         // 삭제 권한 확인
-        Long id = location.getUser().getId();
-        Long LoginId = Long.parseLong(principal.getName());
+        String email = principal.getName();
+        String LocationUserEmail = location.getUser().getEmail();
 
-        if (!id.equals(LoginId)) {
+        if (!email.equals(LocationUserEmail)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
@@ -110,8 +116,8 @@ public class LocationService {
                 , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
     }
 
-    private User getUserById(Long userId) {
-        return EntityFinder.findByIdOrThrow(userRepository.findById(userId)
+    private User getUserByEmail(String email) {
+        return EntityFinder.findByEmailOrThrow(userRepository.findByEmail(email)
                 , ErrorCode.USER_NOT_FOUND_EXCEPTION);
 
     }

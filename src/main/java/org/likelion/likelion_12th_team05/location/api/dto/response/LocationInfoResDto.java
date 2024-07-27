@@ -5,6 +5,7 @@ import org.likelion.likelion_12th_team05.location.domain.Location;
 
 @Builder
 public record LocationInfoResDto(
+        Long locationId,
         Long curationId,
         String name,
         String description,
@@ -13,6 +14,7 @@ public record LocationInfoResDto(
 ) {
     public static LocationInfoResDto from(Location location) {
         return LocationInfoResDto.builder()
+                .locationId(location.getId())
                 .curationId(location.getCuration().getId())
                 .name(location.getName())
                 .description(location.getDescription())
