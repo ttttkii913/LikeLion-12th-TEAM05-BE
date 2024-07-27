@@ -2,7 +2,6 @@ package org.likelion.likelion_12th_team05.user.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.likelion.likelion_12th_team05.global.auth.jwt.JwtTokenProvider;
-import org.likelion.likelion_12th_team05.global.auth.jwt.TokenDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
@@ -29,7 +28,7 @@ public class UserService {
 
     // 회원가입
     @Transactional
-    public void userSignUp(UserSignUpReqDto userSignUpReqDto, TokenDto tokenDto) {
+    public void userSignUp(UserSignUpReqDto userSignUpReqDto, String email) {
         if (userRepository.existsByEmail(userSignUpReqDto.email())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
@@ -38,8 +37,8 @@ public class UserService {
                 .name(userSignUpReqDto.name())
                 .email(userSignUpReqDto.email())
                 .password(passwordEncoder.encode(userSignUpReqDto.password()))
-                .accessToken(tokenDto.accessToken())
-                .refreshToken(tokenDto.refreshToken())
+                .accessToken(tokenProvider.generateToken(email))
+                .refreshToken(tokenProvider.refreshToken(email))
                 .role(Role.ROLE_USER)
                 .build();
 
