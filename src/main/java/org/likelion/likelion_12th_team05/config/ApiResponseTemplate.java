@@ -30,6 +30,10 @@ public class ApiResponseTemplate<T> {
         return new ApiResponseTemplate<>(ERROR_STATUS, errorCode.getMessage(), null);
     }
 
+    public static <T> ApiResponseTemplate<T> errorResponse(ErrorCode errorCode, T message) {
+        return new ApiResponseTemplate<>(ERROR_STATUS, errorCode.getMessage(), message);
+    }
+
     private ApiResponseTemplate(String status, String message, T data) {
         this.status = status;
         this.message = message;

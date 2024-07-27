@@ -8,7 +8,7 @@ import org.likelion.likelion_12th_team05.user.domain.Role;
 // 회원가입
 public record UserSignUpReqDto(
         @NotBlank(message = "이름을 필수로 입력해야 합니다.")
-        @Size(min = 2, max = 15, message = "2자 이상, 10자 이하로 입력하세요.")
+        @Size(min = 2, max = 15, message = "2자 이상, 15자 이하로 입력하세요.")
         String name,
 
         @NotBlank(message = "이메일을 필수로 입력해야 합니다.")
