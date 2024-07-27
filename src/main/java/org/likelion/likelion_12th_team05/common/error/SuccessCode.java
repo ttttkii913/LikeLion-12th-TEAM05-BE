@@ -19,6 +19,7 @@ public enum SuccessCode {   // Success 상태와 메세지, 코드를 정의
     LIKE_DELETE_SUCCESS("좋아요가 성공적으로 삭제되었습니다."),
     USER_SIGNUP_SUCCESS("회원가입에 성공하였습니다."),
     USER_LOGIN_SUCCESS("로그인에 성공하였습니다."),
+    USER_INFO_UPDATE_SUCCESS("사용자의 정보가 성공적으로 변경되었습니다."),
     /**
      * 201 CREATED (POST의 결과 상태
      */

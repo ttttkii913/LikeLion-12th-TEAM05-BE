@@ -10,11 +10,14 @@ public record LocationSaveReqDto(
         String address
 ) {
     public Location toEntity(String locationImage, Curation curation, User user) {
+        // 위치 저장 시 이미지를 선택으로 수정/ 이미지가 비어있지 않다면 이미지 저장, 비어있다면 빈 문자열로 locationImage 저장 => location 엔티티에서 locationImage nullable 지워줌
+        String image = (locationImage != null) ? locationImage : "";
+
         return Location.builder()
                 .name(name)
                 .description(description)
                 .address(address)
-                .locationImage(locationImage)
+                .locationImage(image)
                 .curation(curation)
                 .user(user)
                 .build();

@@ -47,7 +47,11 @@ public class LocationService {
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
 
-        String locationImage = s3Service.upload(multipartFile, "location");
+        // 이미지 업로드를 선택적으로 넘기면서 이미지가 있을 경우에만 업로드
+        String locationImage = null; // 이미지 URL을 저장할 변수
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            locationImage = s3Service.upload(multipartFile, "location");
+        }
 
         Location location = locationSaveReqDto.toEntity(locationImage, curation, user);
         locationRepository.save(location);
