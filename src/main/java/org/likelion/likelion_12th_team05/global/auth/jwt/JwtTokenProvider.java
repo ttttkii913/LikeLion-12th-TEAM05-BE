@@ -6,6 +6,8 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.likelion.likelion_12th_team05.common.error.ErrorCode;
+import org.likelion.likelion_12th_team05.common.exception.CustomException;
 import org.likelion.likelion_12th_team05.user.domain.User;
 import org.likelion.likelion_12th_team05.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,20 +86,15 @@ public class JwtTokenProvider {
 
             // 실패 시 반환하는 예외에 따라 다르게 실행됨
         } catch (UnsupportedJwtException | MalformedJwtException exception) {
-            log.error("JWT 가 유효하지 않습니다.");
-            throw new IllegalArgumentException("JWT 가 유효하지 않습니다");
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EXCEPTION, "JWT 가 유효하지 않습니다.");
         } catch (SignatureException exception) {
-            log.error("JWT 서명 검증에 실패했습니다.");
-            throw new IllegalArgumentException("JWT 서명 검증에 실패했습니다.");
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EXCEPTION, "JWT 서명 검증에 실패했습니다.");
         } catch (ExpiredJwtException exception) {
-            log.error("JWT 가 만료되었습니다.");
-            throw new IllegalArgumentException("JWT 가 만료되었습니다.");
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EXCEPTION,"JWT 가 만료되었습니다.");
         } catch (IllegalArgumentException exception) {
-            log.error("JWT 가 null 이거나 비어있거나 공백만 있습니다.");
-            throw new IllegalArgumentException("JWT 가 null 이거나 비어있거나 공백만 있습니다.");
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EXCEPTION, "JWT 가 null 이거나 비어있거나 공백만 있습니다.");
         } catch (Exception exception) {
-            log.error("JWT 검증에 실패했습니다.", exception);
-            throw new IllegalArgumentException("JWT 검증에 실패했습니다.");
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EXCEPTION, "JWT 검증에 실패했습니다.");
         }
     }
 

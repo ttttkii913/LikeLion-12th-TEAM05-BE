@@ -25,7 +25,7 @@ public enum ErrorCode { // 반복적으로 사용될 Error 상태와 메세지, 
     /**
      * 400 BAD REQUEST
      */
-    VALIDATION_ERROR("BAD_REQUEST_400");
+    VALIDATION_ERROR("잘못된 요청입니다. BAD_REQUEST_400");
 
     private final String message;
 
