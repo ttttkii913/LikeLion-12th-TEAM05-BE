@@ -26,7 +26,7 @@ public class Location {
     private String description;
 
     @JsonIgnore
-    @Column(name = "location_image", nullable = false)
+    @Column(name = "location_image")
     private String locationImage;
 
     @JsonIgnore
