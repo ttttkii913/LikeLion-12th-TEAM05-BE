@@ -57,6 +57,19 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
+    @Operation(summary = "모든 사용자가 큐레이션 하나씩 조회", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션 한 개씩 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
+    })
+    @GetMapping("/{curationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseTemplate<CurationInfoResDto> curationFindOne(@PathVariable("curationId") Long curationId) {
+        CurationInfoResDto curationInfoResDto = curationService.curationFindOne(curationId);
+        return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.GET_SUCCESS);
+    }
+
     @Operation(summary = "인증된 사용자가 큐레이션 생성", description = "인증된 사용자가 산책로 생성 페이지에서 큐레이션을 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
@@ -97,7 +110,7 @@ public class CurationController {
     public ApiResponseTemplate<SuccessCode> curationDelete(@PathVariable("curationId") Long curationId,
                                                            Principal principal) {
         curationService.curationDelete(curationId, principal);
-        return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
+        return ApiResponseTemplate.successWithNoContent(SuccessCode.CURATION_DELETE_SUCCESS);
     }
 
     @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.")
@@ -133,8 +146,8 @@ public class CurationController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
     })
     @GetMapping("/recent")
-    public ApiResponseTemplate<CurationListResDto> findTop6byOrderByCreateDateDesc() {
-        CurationListResDto curationListResDto = curationService.findTop6byOrderByCreateDateDesc();
+    public ApiResponseTemplate<CurationListResDto> findTop6ByOrderByCreateDateDesc() {
+        CurationListResDto curationListResDto = curationService.findTop6ByOrderByCreateDateDesc();
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 

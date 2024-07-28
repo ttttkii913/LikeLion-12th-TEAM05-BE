@@ -8,6 +8,8 @@ import org.likelion.likelion_12th_team05.user.api.dto.request.UserInfoUpdateReqD
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserInfoResDto;
+import org.likelion.likelion_12th_team05.user.api.dto.response.UserPopularInfoResDto;
+import org.likelion.likelion_12th_team05.user.api.dto.response.UserPopularListResDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.domain.Role;
 import org.likelion.likelion_12th_team05.user.domain.User;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -64,6 +67,7 @@ public class UserService {
         return UserSignInResDto.of(user, accessToken, refreshToken);
     }
 
+    // 사용자 정보(이름, 이메일, 비밀번호) 수정
     @Transactional
     public UserInfoResDto userInfoUpdate(UserInfoUpdateReqDto userInfoUpdateReqDto, Principal principal) {
         String email = principal.getName();
@@ -79,6 +83,16 @@ public class UserService {
 
         userRepository.save(user);
         return UserInfoResDto.from(user);
+    }
+
+    // 랜딩 페이지 - 큐레이션 많이 쓴 사용자 6명(작성한 큐레이션 수, 이름) 조회
+    @Transactional
+    public UserPopularListResDto findByOrderByCurationsCurationCountDesc() {
+        List<User> users = userRepository.findByOrderByCurationsCurationCountDesc();
+        List<UserPopularInfoResDto> userPopularInfoResDtoList = users.stream()
+                .map(UserPopularInfoResDto::from)
+                .toList();
+        return UserPopularListResDto.from(userPopularInfoResDtoList);
     }
 
     private User getUserByEmail(String email) {
