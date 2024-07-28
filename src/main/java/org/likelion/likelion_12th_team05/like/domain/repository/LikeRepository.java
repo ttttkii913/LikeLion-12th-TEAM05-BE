@@ -9,5 +9,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
-    List<Like> findByCurationAndUser(Curation curation, User user);
+    Optional<Like> findByCurationAndUser(Curation curation, User user);
 }

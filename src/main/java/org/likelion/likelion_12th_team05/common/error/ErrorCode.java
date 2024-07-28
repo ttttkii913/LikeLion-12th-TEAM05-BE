@@ -25,7 +25,8 @@ public enum ErrorCode { // 반복적으로 사용될 Error 상태와 메세지, 
     /**
      * 400 BAD REQUEST
      */
-    VALIDATION_ERROR("잘못된 요청입니다. BAD_REQUEST_400");
+    VALIDATION_ERROR("잘못된 요청입니다. BAD_REQUEST_400"),
+    ALREADY_LIKE_CURATION("이미 좋아요를 누른 큐레이션입니다.");
 
     private final String message;
 

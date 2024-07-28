@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,6 +32,13 @@ public class LikeService {
 
         String email = principal.getName();
         User user = getUserByEmail(email);
+
+        // 사용자가 이미 좋아요를 눌렀는지 확인 후 이미 눌렀다면 - 이미 누른 좋아요 입니다"
+        // 안 눌렀다면 save되도록 수정
+        if (likeRepository.findByCurationAndUser(curation, user).isPresent()) {
+            throw new NotFoundException(ErrorCode.ALREADY_LIKE_CURATION
+                    , ErrorCode.ALREADY_LIKE_CURATION.getMessage());
+        }
 
         Like like = Like.of(curation, user);
         likeRepository.save(like);
@@ -48,13 +56,13 @@ public class LikeService {
         String email = principal.getName();
         User user = getUserByEmail(email);
 
-        // 큐레이션에 좋아요가 존재하는지 확인
-        List<Like> existingLikes = likeRepository.findByCurationAndUser(curation, user);
+        // 사용자가 좋아요를 누르지 않았을 때 -> likeCount가 이미 0일 때 또 삭제를 시도하면 좋아요를 누르지 않았다고 에러 줌
+        Optional<Like> existingLikes = likeRepository.findByCurationAndUser(curation, user);
         if (existingLikes.isEmpty()) {
             throw new NotFoundException(ErrorCode.LIKE_NOT_FOUND_EXCEPTION,
                     ErrorCode.LIKE_NOT_FOUND_EXCEPTION.getMessage());
         }
-        Like like = existingLikes.get(0);
+        Like like = existingLikes.get();
         likeRepository.delete(like);
 
         // curation의 like count 감소
