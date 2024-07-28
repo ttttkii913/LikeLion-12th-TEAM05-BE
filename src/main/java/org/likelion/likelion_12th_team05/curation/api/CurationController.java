@@ -110,7 +110,7 @@ public class CurationController {
     public ApiResponseTemplate<SuccessCode> curationDelete(@PathVariable("curationId") Long curationId,
                                                            Principal principal) {
         curationService.curationDelete(curationId, principal);
-        return ApiResponseTemplate.successWithNoContent(SuccessCode.GET_SUCCESS);
+        return ApiResponseTemplate.successWithNoContent(SuccessCode.CURATION_DELETE_SUCCESS);
     }
 
     @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.")
