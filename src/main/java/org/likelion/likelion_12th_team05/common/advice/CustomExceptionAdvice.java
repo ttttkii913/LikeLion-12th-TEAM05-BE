@@ -24,13 +24,6 @@ import java.util.Map;
 @Slf4j
 public class CustomExceptionAdvice {
 
-    // 엔티티 not found 에러 처리 핸들러
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiResponseTemplate<Void>> handleNotFoundException(NotFoundException ex) {
-        ApiResponseTemplate<Void> errorResponse = ApiResponseTemplate.errorResponse(ex.getErrorCode());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
     // 내부 커스텀 에러 처리
     @ExceptionHandler(CustomException.class)
     public ApiResponseTemplate handleCustomException(CustomException exception) {
