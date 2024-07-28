@@ -12,6 +12,7 @@ import org.likelion.likelion_12th_team05.user.api.dto.request.UserInfoUpdateReqD
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserInfoResDto;
+import org.likelion.likelion_12th_team05.user.api.dto.response.UserPopularListResDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.application.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -75,8 +76,21 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
     })
     @PatchMapping("/user/info")
-    private ApiResponseTemplate<UserInfoResDto> userInfoUpdate(@RequestBody @Valid UserInfoUpdateReqDto userInfoUpdateReqDto, Principal principal) {
+    public ApiResponseTemplate<UserInfoResDto> userInfoUpdate(@RequestBody @Valid UserInfoUpdateReqDto userInfoUpdateReqDto, Principal principal) {
         UserInfoResDto userInfoResDto = userService.userInfoUpdate(userInfoUpdateReqDto, principal);
         return ApiResponseTemplate.successResponse(userInfoResDto, SuccessCode.USER_INFO_UPDATE_SUCCESS);
     }
+
+    @Operation(summary = "모든 사용자가 큐레이션을 가장 많이 작성한 6명의 큐레이터 조회", description = "모든 사용자는 랜딩 페이지에서 큐레이션을 가장 많이 작성한 6명의 큐레이터를 볼 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
+    @GetMapping("/user/popular")
+    public ApiResponseTemplate<UserPopularListResDto> findByOrderByCurationsCurationCountDesc() {
+        UserPopularListResDto userPopularListResDto = userService.findByOrderByCurationsCurationCountDesc();
+        return ApiResponseTemplate.successResponse(userPopularListResDto, SuccessCode.GET_SUCCESS);
+    }
+
 }
