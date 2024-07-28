@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.List;
@@ -96,6 +97,13 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
+    // 모든 사용자 - 산책로 지도 페이지 - 큐레이션 한 개씩 조회
+    @Transactional
+    public CurationInfoResDto curationFindOne(@PathVariable("curationId") Long curationId) {
+        Curation curation = getCurationById(curationId);
+        return CurationInfoResDto.from(curation);
+    }
+
     // 모든 사용자 - 랜딩 페이지 - 큐레이션 좋아요 많은 순으로 6개만 조회
     @Transactional
     public CurationListResDto findTop6ByOrderByLikeCountDesc() {
@@ -108,8 +116,8 @@ public class CurationService {
 
     // 모든 사용자 - 랜딩페이지 - 큐레이션 최신(createDate desc) 순으로 6개만 조회
     @Transactional
-    public CurationListResDto findTop6byOrderByCreateDateDesc() {
-        List<Curation> curations = curationRepository.findTop6byOrderByCreateDateDesc();
+    public CurationListResDto findTop6ByOrderByCreateDateDesc() {
+        List<Curation> curations = curationRepository.findTop6ByOrderByCreateDateDesc();
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();

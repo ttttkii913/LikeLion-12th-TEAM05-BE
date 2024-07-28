@@ -21,5 +21,5 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     // 최신순 조회
     @Query(value = "SELECT * FROM curation ORDER BY create_date DESC limit 6", nativeQuery = true)
-    List<Curation> findTop6byOrderByCreateDateDesc();
+    List<Curation> findTop6ByOrderByCreateDateDesc();
 }
