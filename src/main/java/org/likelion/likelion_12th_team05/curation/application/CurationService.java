@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.List;
@@ -34,6 +35,8 @@ public class CurationService {
         User user = getUserByEmail(email);
 
         Curation curation = curationSaveReqDto.toEntity(user);
+        // 큐레이션 생성 시 사용자마다 큐레이션 개수가 하나 증가하도록 -> 랜딩 페이지에서 큐레이션 가장 많이 작성한 큐레이터 조회하기 위함 -> 삭제 시에도 반영
+        user.setCurationCount(user.getCurationCount() + 1);
         curationRepository.save(curation);
 
         return CurationInfoResDto.from(curation);
@@ -66,12 +69,15 @@ public class CurationService {
 
         // 큐레이션 작성자 이메일과 일치하는지 확인 - 삭제 권한 확인
         String email = principal.getName();
+        User user = getUserByEmail(email);
         String CurationUserEmail = curation.getUser().getEmail();
 
         if (!email.equals(CurationUserEmail)) {
             throw new NotFoundException(ErrorCode.NO_AUTHORIZATION_EXCEPTION
                     , ErrorCode.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
+        // 큐레이션 삭제 시에 사용자의 큐레이션 개수가 하나 줄어들도록
+        user.setCurationCount(user.getCurationCount() - 1);
         curationRepository.delete(curation);
     }
 
@@ -96,6 +102,13 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
+    // 모든 사용자 - 산책로 지도 페이지 - 큐레이션 한 개씩 조회
+    @Transactional
+    public CurationInfoResDto curationFindOne(@PathVariable("curationId") Long curationId) {
+        Curation curation = getCurationById(curationId);
+        return CurationInfoResDto.from(curation);
+    }
+
     // 모든 사용자 - 랜딩 페이지 - 큐레이션 좋아요 많은 순으로 6개만 조회
     @Transactional
     public CurationListResDto findTop6ByOrderByLikeCountDesc() {
@@ -108,8 +121,8 @@ public class CurationService {
 
     // 모든 사용자 - 랜딩페이지 - 큐레이션 최신(createDate desc) 순으로 6개만 조회
     @Transactional
-    public CurationListResDto findTop6byOrderByCreateDateDesc() {
-        List<Curation> curations = curationRepository.findTop6byOrderByCreateDateDesc();
+    public CurationListResDto findTop6ByOrderByCreateDateDesc() {
+        List<Curation> curations = curationRepository.findTop6ByOrderByCreateDateDesc();
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();
