@@ -129,6 +129,24 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
+    // 인증된 사용자 - 마이페이지 - 자신이 좋아요 누른 큐레이션 목록(페이지네이션 6개) 조회
+    @Transactional
+    public CurationListResDto findCurationUserLikes(Pageable pageable, Principal principal) {
+        String email = principal.getName();
+        User user = getUserByEmail(email);
+
+        // 좋아요 누른 큐레이션이 없다면 "아직 좋아요를 누르지 않았습니다" 던져주기
+        if (user.getLikes().isEmpty())
+            throw new NotFoundException(ErrorCode.NO_USER_LIKE_CURATIONS_EXCEPTION,
+                    ErrorCode.NO_USER_LIKE_CURATIONS_EXCEPTION.getMessage());
+
+        List<Curation> curations = curationRepository.findUserLikes(user, pageable);
+        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
+                .map(CurationInfoResDto::from)
+                .toList();
+        return CurationListResDto.from(curationInfoResDtoList);
+    }
+
     // 반복되는 예외 반환 메서드 추출 => 공통 예외 처리로 일관성 높이기 위함 => entityfinder로 중앙 관리
     private Curation getCurationById(Long curationId) {
         return EntityFinder.findByIdOrThrow(curationRepository.findById(curationId)
