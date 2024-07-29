@@ -140,7 +140,7 @@ public class CurationService {
             throw new NotFoundException(ErrorCode.NO_USER_LIKE_CURATIONS_EXCEPTION,
                     ErrorCode.NO_USER_LIKE_CURATIONS_EXCEPTION.getMessage());
 
-        List<Curation> curations = curationRepository.findUserLikes(user, pageable);
+        Page<Curation> curations = curationRepository.findUserLikes(user, pageable);
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();
