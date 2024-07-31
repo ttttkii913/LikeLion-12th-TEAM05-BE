@@ -3,6 +3,7 @@ package org.likelion.likelion_12th_team05.curation.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
@@ -77,9 +78,9 @@ public class CurationController {
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
     })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // @Valid 추가 예정
-    public ApiResponseTemplate<CurationInfoResDto> curationSave(@RequestBody CurationSaveReqDto curationSaveReqDto
-                                                                , Principal principal) throws IOException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponseTemplate<CurationInfoResDto> curationSave(@Valid @RequestBody CurationSaveReqDto curationSaveReqDto
+                                                                , Principal principal) {
         CurationInfoResDto curationInfoResDto = curationService.curationSave(curationSaveReqDto, principal);
         return ApiResponseTemplate.successResponse(curationInfoResDto, SuccessCode.CURATION_SAVE_SUCCESS);
     }
