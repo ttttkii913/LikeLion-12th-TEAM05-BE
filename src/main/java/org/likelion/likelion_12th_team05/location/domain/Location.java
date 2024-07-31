@@ -2,16 +2,14 @@ package org.likelion.likelion_12th_team05.location.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.likelion.likelion_12th_team05.curation.domain.Curation;
 import org.likelion.likelion_12th_team05.location.api.dto.request.LocationUpdateReqDto;
 import org.likelion.likelion_12th_team05.user.domain.User;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Location {
     @Id
@@ -33,6 +31,12 @@ public class Location {
     @Column(name = "location_address", nullable = false)
     private String address;
 
+    @Column(name = "location_logitude")
+    private Double longitude;
+
+    @Column(name = "location_latitude")
+    private Double latitude;
+
     @ManyToOne
     @JoinColumn(name = "curation_id")
     private Curation curation;
@@ -42,13 +46,15 @@ public class Location {
     private User user;
 
     @Builder
-    public Location(String name, String description, String address, String locationImage, Curation curation, User user) {
+    public Location(String name, String description, String address, String locationImage, Curation curation, User user, Double longitude, Double latitude) {
         this.name = name;
         this.description = description;
         this.address = address;
         this.locationImage = locationImage;
         this.curation = curation;
         this.user = user;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public void update(LocationUpdateReqDto locationUpdateReqDto) {
