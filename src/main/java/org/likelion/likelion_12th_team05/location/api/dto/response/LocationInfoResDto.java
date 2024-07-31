@@ -10,7 +10,9 @@ public record LocationInfoResDto(
         String name,
         String description,
         String address,
-        String locationImage
+        String locationImage,
+        Double longitude,
+        Double latitude
 ) {
     public static LocationInfoResDto from(Location location) {
         return LocationInfoResDto.builder()
@@ -20,6 +22,8 @@ public record LocationInfoResDto(
                 .description(location.getDescription())
                 .address(location.getAddress())
                 .locationImage(location.getLocationImage())
+                .longitude(location.getLongitude())
+                .latitude(location.getLatitude())
                 .build();
     }
 }
