@@ -5,11 +5,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
-import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationSaveReqDto;
+import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationInfoResDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationListResDto;
 import org.likelion.likelion_12th_team05.curation.application.CurationService;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.security.Principal;
 
 @RestController
