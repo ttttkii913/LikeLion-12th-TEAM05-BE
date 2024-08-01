@@ -31,6 +31,9 @@ public class Curation extends BaseTimeEntity {
     @Column(name = "like_count")
     private Integer likeCount = 0;
 
+    @Column(name = "comment_count")
+    private Integer commentCount = 0;
+
     @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
@@ -63,4 +66,6 @@ public class Curation extends BaseTimeEntity {
         if (this.likeCount > 0)
             this.likeCount--;
     }
+
+
 }
