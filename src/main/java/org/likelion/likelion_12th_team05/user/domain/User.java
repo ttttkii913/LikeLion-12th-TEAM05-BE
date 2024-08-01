@@ -2,6 +2,7 @@ package org.likelion.likelion_12th_team05.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.likelion.likelion_12th_team05.comment.domain.Comment;
 import org.likelion.likelion_12th_team05.curation.domain.Curation;
 import org.likelion.likelion_12th_team05.like.domain.Like;
 import org.likelion.likelion_12th_team05.location.domain.Location;
@@ -34,6 +35,9 @@ public class User {
     private List<Curation> curations = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -41,6 +45,9 @@ public class User {
 
     @Column(name = "curation_count")
     private Integer curationCount = 0;
+
+    @Column(name = "comment_count")
+    private Integer commentCount = 0;
 
     @Builder
     private User(String name, String email, String password, String accessToken, String refreshToken, Role role){
