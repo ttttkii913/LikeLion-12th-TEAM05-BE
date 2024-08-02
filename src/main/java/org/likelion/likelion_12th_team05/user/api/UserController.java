@@ -8,6 +8,8 @@ import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.AuthLoginService;
 import org.likelion.likelion_12th_team05.global.auth.googleAuth.GoogleToken;
+import org.likelion.likelion_12th_team05.global.auth.kakaoAuth.KakaoLoginService;
+import org.likelion.likelion_12th_team05.global.auth.kakaoAuth.KakaoToken;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserInfoUpdateReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignInReqDto;
 import org.likelion.likelion_12th_team05.user.api.dto.request.UserSignUpReqDto;
@@ -23,10 +25,12 @@ import java.security.Principal;
 public class UserController {
     private final UserService userService;
     private final AuthLoginService authLoginService;
+    private final KakaoLoginService kakaoLoginService;
 
-    public UserController(UserService userService, AuthLoginService authLoginService) {
+    public UserController(UserService userService, AuthLoginService authLoginService, KakaoLoginService kakaoLoginService) {
         this.userService = userService;
         this.authLoginService = authLoginService;
+        this.kakaoLoginService = kakaoLoginService;
     }
 
     @Operation(summary = "회원가입", description = "자체 회원가입")
@@ -55,6 +59,22 @@ public class UserController {
 
     public GoogleToken signUpOrSignIn(String googleAccessToken) {
         return authLoginService.signUpOrSignIn(googleAccessToken);
+    }
+
+    @Operation(summary = "카카오 인가 코드 발급 후 액세스 토큰 리다이렉트", description = "카카오 인가 코드 발급 후 액세스 토큰을 리다이렉트 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
+    })
+    @GetMapping("/login/oauth2/code/kakao")
+    public KakaoToken kakaoCallback(@RequestParam(name = "code") String code) {
+        String kakaoAccessToken = kakaoLoginService.getKakaoAccessToken(code);
+        return signUpOrSignInWithKakao(kakaoAccessToken);
+    }
+
+    public KakaoToken signUpOrSignInWithKakao(String kakaoAccessToken) {
+        return kakaoLoginService.signUpOrSignInWithKakao(kakaoAccessToken);
     }
 
     @Operation(summary = "로그인", description = "자체 로그인")
