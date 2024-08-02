@@ -37,3 +37,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
