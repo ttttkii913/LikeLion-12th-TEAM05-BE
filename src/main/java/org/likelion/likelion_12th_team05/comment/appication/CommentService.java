@@ -3,6 +3,7 @@ package org.likelion.likelion_12th_team05.comment.appication;
 import org.likelion.likelion_12th_team05.comment.api.request.CommentSaveReqDto;
 import org.likelion.likelion_12th_team05.comment.api.request.CommentUpdateReqDto;
 import org.likelion.likelion_12th_team05.comment.api.response.CommentInfoResDto;
+import org.likelion.likelion_12th_team05.comment.api.response.CommentListResDto;
 import org.likelion.likelion_12th_team05.comment.domain.Comment;
 import org.likelion.likelion_12th_team05.comment.domain.CommentRepository;
 import org.likelion.likelion_12th_team05.common.EntityFinder;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -30,6 +32,7 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
+    // 댓글 저장
     @Transactional
     public CommentInfoResDto commentSave(Long curationId, CommentSaveReqDto commentSaveReq, Principal principal) {
         Curation curation = getCurationById(curationId);    // 큐레이션 엔티티 조회 <- 큐레이션의 댓글 카운트 설정을 위함
@@ -43,6 +46,7 @@ public class CommentService {
         return CommentInfoResDto.from(comment); // 댓글 정보 리턴
     }
 
+    // 댓글 수정
     @Transactional
     public CommentInfoResDto commentUpdate(Long commentId, CommentUpdateReqDto commentUpdateReqDto, Principal principal) {
         String email = principal.getName();
@@ -61,6 +65,7 @@ public class CommentService {
         return CommentInfoResDto.from(comment);
     }
 
+    // 댓글 삭제
     @Transactional
     public void commentDelete(Long commentId, Principal principal) {
         String email = principal.getName();
@@ -77,6 +82,17 @@ public class CommentService {
         if (curation != null)
             curation.setCommentCount(curation.getCommentCount() - 1);
         commentRepository.delete(comment);
+    }
+
+    // 큐레이션에 달린 댓글 전체 조회
+    @Transactional
+    public CommentListResDto commentFindAll(Long curationId) {
+        Curation curation = getCurationById(curationId);
+        List<Comment> comments = commentRepository.findAllByCurationId(curationId);
+        List<CommentInfoResDto> commentInfoResDtoList = comments.stream()
+                .map(CommentInfoResDto::from)
+                .toList();
+        return CommentListResDto.from(commentInfoResDtoList);
     }
 
     private Comment getCommentById(Long commentId) {

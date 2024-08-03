@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.likelion.likelion_12th_team05.comment.api.request.CommentSaveReqDto;
 import org.likelion.likelion_12th_team05.comment.api.request.CommentUpdateReqDto;
 import org.likelion.likelion_12th_team05.comment.api.response.CommentInfoResDto;
+import org.likelion.likelion_12th_team05.comment.api.response.CommentListResDto;
 import org.likelion.likelion_12th_team05.comment.appication.CommentService;
 import org.likelion.likelion_12th_team05.common.error.SuccessCode;
 import org.likelion.likelion_12th_team05.config.ApiResponseTemplate;
@@ -63,5 +64,16 @@ public class CommentController {
     public ApiResponseTemplate commentDelete(@PathVariable("commentId") Long commentId, Principal principal) {
         commentService.commentDelete(commentId, principal);
         return ApiResponseTemplate.successWithNoContent(SuccessCode.COMMENT_DELETE_SUCCESS);
+    }
+
+    @Operation(summary = "모든 사용자가  큐레이션에 달린 댓글 전체 조회", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션에 단 댓글을 모두 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+    })
+    @GetMapping("{curationId}")
+    public ApiResponseTemplate<CommentListResDto> commentFindAll(@PathVariable("curationId") Long curationId) {
+        CommentListResDto commentListResDto = commentService.commentFindAll(curationId);
+        return ApiResponseTemplate.successResponse(commentListResDto, SuccessCode.GET_SUCCESS);
     }
 }
