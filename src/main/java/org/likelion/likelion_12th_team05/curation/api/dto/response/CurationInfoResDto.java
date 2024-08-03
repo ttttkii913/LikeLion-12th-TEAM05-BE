@@ -14,7 +14,9 @@ public record CurationInfoResDto(
         String content,
         LocalDateTime createDate,
         Integer likeCount,
+        Integer commentCounts,
         List<LocationInfoResDto> locations
+
 ) {
     public static CurationInfoResDto from(Curation curation) {
         return CurationInfoResDto.builder()
@@ -22,6 +24,7 @@ public record CurationInfoResDto(
                 .name(curation.getName())
                 .content(curation.getContent())
                 .createDate(curation.getCreateDate())
+                .commentCounts(curation.getCommentCount())
                 .likeCount(curation.getLikeCount())
                 .locations(curation.getLocations().stream()
                         .map(LocationInfoResDto::from)

@@ -46,9 +46,6 @@ public class User {
     @Column(name = "curation_count")
     private Integer curationCount = 0;
 
-    @Column(name = "comment_count")
-    private Integer commentCount = 0;
-
     @Builder
     private User(String name, String email, String password, String accessToken, String refreshToken, Role role){
         this.name = name;
