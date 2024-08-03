@@ -41,7 +41,7 @@ public class Curation extends BaseTimeEntity {
     @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne
@@ -49,11 +49,10 @@ public class Curation extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Curation(String name, String content, User user, Integer commentCount) {
+    public Curation(String name, String content, User user) {
         this.name = name;
         this.content = content;
         this.user = user;
-        this.commentCount = commentCount;
     }
 
     public void update(CurationUpdateReqDto curationUpdateReqDto, User user) {
