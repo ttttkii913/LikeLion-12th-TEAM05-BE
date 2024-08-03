@@ -2,6 +2,7 @@ package org.likelion.likelion_12th_team05.curation.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.likelion.likelion_12th_team05.comment.domain.Comment;
 import org.likelion.likelion_12th_team05.common.BaseTimeEntity;
 import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.like.domain.Like;
@@ -37,18 +38,22 @@ public class Curation extends BaseTimeEntity {
     @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Location> locations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
-
     @Builder
-    public Curation(String name, String content, User user) {
+    public Curation(String name, String content, User user, Integer commentCount) {
         this.name = name;
         this.content = content;
         this.user = user;
+        this.commentCount = commentCount;
     }
 
     public void update(CurationUpdateReqDto curationUpdateReqDto, User user) {
@@ -66,6 +71,4 @@ public class Curation extends BaseTimeEntity {
         if (this.likeCount > 0)
             this.likeCount--;
     }
-
-
 }
