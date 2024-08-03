@@ -28,9 +28,6 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "comment_count")
-    private Integer commentCount = 0;
-
     @Builder
     private Comment(String comment, Curation curation, User user) {
         this.comment = comment;
@@ -41,14 +38,5 @@ public class Comment {
     public void updateCommentInfo(CommentUpdateReqDto commentUpdateReqDto, User user) {
         this.comment = commentUpdateReqDto.comment();
         this.user = user;
-    }
-
-    public void saveCommentCount() {
-        this.commentCount++;
-    }
-
-    public void deleteComment() {
-        if (this.commentCount > 0)
-            this.commentCount--;
     }
 }

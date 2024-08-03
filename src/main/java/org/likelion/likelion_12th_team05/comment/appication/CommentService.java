@@ -1,6 +1,5 @@
 package org.likelion.likelion_12th_team05.comment.appication;
 
-import org.likelion.likelion_12th_team05.comment.api.request.CommentSaveReqDto;
 import org.likelion.likelion_12th_team05.comment.api.request.CommentUpdateReqDto;
 import org.likelion.likelion_12th_team05.comment.api.response.CommentInfoResDto;
 import org.likelion.likelion_12th_team05.comment.domain.Comment;
@@ -8,7 +7,9 @@ import org.likelion.likelion_12th_team05.comment.domain.CommentRepository;
 import org.likelion.likelion_12th_team05.common.EntityFinder;
 import org.likelion.likelion_12th_team05.common.error.ErrorCode;
 import org.likelion.likelion_12th_team05.common.exception.CustomException;
-import org.likelion.likelion_12th_team05.common.exception.NotFoundException;
+import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationSaveReqDto;
+import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationInfoResDto;
+import org.likelion.likelion_12th_team05.curation.domain.Curation;
 import org.likelion.likelion_12th_team05.curation.domain.repository.CurationRepository;
 import org.likelion.likelion_12th_team05.user.domain.User;
 import org.likelion.likelion_12th_team05.user.domain.repository.UserRepository;
@@ -20,23 +21,26 @@ import java.security.Principal;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CurationRepository curationRepository;
     private final UserRepository userRepository;
+
 
     public CommentService(CommentRepository commentRepository, CurationRepository curationRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
+        this.curationRepository = curationRepository;
         this.userRepository = userRepository;
     }
 
     @Transactional
-    public CommentInfoResDto commentSave(CommentSaveReqDto commentSaveReqDto, Principal principal) {
+    public CurationInfoResDto commentSave(CurationSaveReqDto curationSaveReqDto, Principal principal) {
         String email = principal.getName();
         User user = getUserByEmail(email);
 
-        Comment comment = commentSaveReqDto.toEntity(user);
-        user.setCommentCount(user.getCommentCount() + 1);
-        commentRepository.save(comment);
+        Curation curation = curationSaveReqDto.toEntity(user);
+        curation.setCommentCount(curation.getCommentCount() + 1);
+        curationRepository.save(curation);
 
-        return CommentInfoResDto.from(comment);
+        return CurationInfoResDto.from(curation);
     }
 
     @Transactional
@@ -59,18 +63,13 @@ public class CommentService {
 
     @Transactional
     public void commentDelete(Long commentId, Principal principal) {
-        Comment comment = getCommentById(commentId);
-
         String email = principal.getName();
         User user = getUserByEmail(email);
-        String commentUserEmail = comment.getUser().getEmail();
 
-        if (!email.equals(commentUserEmail)) {
-            throw new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION,
-                    ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage());
-        }
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION,
+                        ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
 
-        user.setCommentCount(user.getCommentCount() - 1);
         commentRepository.delete(comment);
     }
 

@@ -14,13 +14,16 @@ public record CurationSaveReqDto(
 
         @NotBlank(message = "내용은 필수로 입력해야 합니다.")
         @Size(min = 2, max = 15, message = "2자 이상 15자 이하로 입력해야 합니다.")
-        String content
+        String content,
+
+        Integer commentCount
 
 ) {
     public Curation toEntity(User user) {
         return Curation.builder()
                 .name(this.name)
                 .content(this.content)
+                .commentCount(this.commentCount)
                 .user(user)
                 .build();
     }
