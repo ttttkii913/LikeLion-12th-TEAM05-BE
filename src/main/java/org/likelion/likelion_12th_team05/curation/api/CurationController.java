@@ -44,14 +44,10 @@ public class CurationController {
             @RequestParam(value = "size", defaultValue = "6") int size,
             @RequestParam(value = "sort", defaultValue = "id,asc") String sort
     ) {
-        Pageable pageable;
-        if (sort.isEmpty()) {
-            pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        } else {
-            String[] sortParams = sort.split(",");
-            Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
-            pageable = PageRequest.of(page, size, sortOrder);
-        }
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
         CurationListResDto curationListResDto = curationService.curationFindAll(pageable);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
@@ -112,7 +108,7 @@ public class CurationController {
         return ApiResponseTemplate.successWithNoContent(SuccessCode.CURATION_DELETE_SUCCESS);
     }
 
-    @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.")
+    @Operation(summary = "모든 사용자가 큐레이션 검색", description = "모든 사용자가 산책로 지도 페이지에서 큐레이션을 6개씩 검색합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -120,12 +116,20 @@ public class CurationController {
     })
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query) {
-        CurationListResDto searchResults = curationService.searchCurations(query);
+    public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query,
+                                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(value = "size", defaultValue = "6") int size,
+                                                                   @RequestParam(value = "sort", defaultValue = "id,asc") String sort
+    ) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        CurationListResDto searchResults = curationService.searchCurations(query, pageable);
         return ApiResponseTemplate.successResponse(searchResults, SuccessCode.GET_SUCCESS);
     }
 
-    @Operation(summary = "모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개 조회", description = "모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 6개의 큐레이션을 조회합니다.")
+    @Operation(summary = "모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개씩 조회", description = "모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 큐레이션을 6개씩 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -133,20 +137,36 @@ public class CurationController {
     })
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseTemplate<CurationListResDto> findTop6ByOrderByLikeCountDesc() {
-        CurationListResDto curationListResDto = curationService.findTop6ByOrderByLikeCountDesc();
+    public ApiResponseTemplate<CurationListResDto> findAllByOrderByLikeCountDesc(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size,
+            @RequestParam(value = "sort", defaultValue = "id,asc") String sort
+    ) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        CurationListResDto curationListResDto = curationService.findAllByOrderByLikeCountDesc(pageable);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
-    @Operation(summary = "모든 사용자가 최신순으로 정렬된 큐레이션 6개 조회", description = "모든 사용자가 랜딩페이지에서 최신순으로 정렬된 6개의 큐레이션을 조회합니다.")
+    @Operation(summary = "모든 사용자가 최신순으로 정렬된 큐레이션 6개씩 조회", description = "모든 사용자가 랜딩페이지에서 최신순으로 정렬된 큐레이션을 6개씩 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
     })
     @GetMapping("/recent")
-    public ApiResponseTemplate<CurationListResDto> findTop6ByOrderByCreateDateDesc() {
-        CurationListResDto curationListResDto = curationService.findTop6ByOrderByCreateDateDesc();
+    public ApiResponseTemplate<CurationListResDto> findAllByOrderByCreateDateDesc(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size,
+            @RequestParam(value = "sort", defaultValue = "id,asc") String sort
+    ) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        CurationListResDto curationListResDto = curationService.findAllByOrderByCreateDateDesc(pageable);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
@@ -162,14 +182,10 @@ public class CurationController {
                                                                          @RequestParam(value = "size", defaultValue = "6") int size,
                                                                          @RequestParam(value = "sort", defaultValue = "id,asc") String sort
     ) {
-        Pageable pageable;
-        if (sort.isEmpty()) {
-            pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        } else {
-            String[] sortParams = sort.split(",");
-            Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
-            pageable = PageRequest.of(page, size, sortOrder);
-        }
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
         CurationListResDto curationListResDto = curationService.findCurationUserLikes(pageable, principal);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
