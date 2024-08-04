@@ -189,5 +189,23 @@ public class CurationController {
         CurationListResDto curationListResDto = curationService.findCurationUserLikes(pageable, principal);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
+    @Operation(summary = "인증된 사용자가 자신이 좋아요 누른 큐레이션 조회", description = "인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.")
+    })
+    @GetMapping("/comment")
+    public ApiResponseTemplate<CurationListResDto> findAllByOrderCommentCountDesc
+            (Principal principal,   @RequestParam(value = "page", defaultValue = "0") int page,
+                                    @RequestParam(value = "size", defaultValue = "6") int size,
+                                    @RequestParam(value = "sort", defaultValue = "id,asc") String sort
+    ) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
 
+        CurationListResDto curationListResDto = curationService.findCommentCount(pageable);
+        return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
+    }
 }
