@@ -83,8 +83,8 @@ public class CurationService {
 
     // 모든 사용자 - 큐레이션 검색
     @Transactional
-    public CurationListResDto searchCurations(String query) {
-        List<Curation> curations = curationRepository.findByNameContaining(query);
+    public CurationListResDto searchCurations(String query, Pageable pageable) {
+        Page<Curation> curations = curationRepository.findByNameContaining(query, pageable);
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();
@@ -109,20 +109,20 @@ public class CurationService {
         return CurationInfoResDto.from(curation);
     }
 
-    // 모든 사용자 - 랜딩 페이지 - 큐레이션 좋아요 많은 순으로 6개만 조회
+    // 모든 사용자 - 랜딩 페이지 - 큐레이션 좋아요 많은 순으로 페이지네이션
     @Transactional
-    public CurationListResDto findTop6ByOrderByLikeCountDesc() {
-        List<Curation> curations = curationRepository.findTop6ByOrderByLikeCountDesc();
+    public CurationListResDto findAllByOrderByLikeCountDesc(Pageable pageable) {
+        Page<Curation> curations = curationRepository.findAllByOrderByLikeCountDesc(pageable);
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
-    // 모든 사용자 - 랜딩페이지 - 큐레이션 최신(createDate desc) 순으로 6개만 조회
+    // 모든 사용자 - 랜딩페이지 - 큐레이션 최신(createDate desc) 순으로 6개씩 페이지네이션
     @Transactional
-    public CurationListResDto findTop6ByOrderByCreateDateDesc() {
-        List<Curation> curations = curationRepository.findTop6ByOrderByCreateDateDesc();
+    public CurationListResDto findAllByOrderByCreateDateDesc(Pageable pageable) {
+        Page<Curation> curations = curationRepository.findAllByOrderByCreateDateDesc(pageable);
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();

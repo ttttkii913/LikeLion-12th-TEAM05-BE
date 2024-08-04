@@ -15,6 +15,8 @@ import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.domain.Role;
 import org.likelion.likelion_12th_team05.user.domain.User;
 import org.likelion.likelion_12th_team05.user.domain.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,8 +90,8 @@ public class UserService {
 
     // 랜딩 페이지 - 큐레이션 많이 쓴 사용자 6명(작성한 큐레이션 수, 이름) 조회
     @Transactional
-    public UserPopularListResDto findByOrderByCurationsCurationCountDesc() {
-        List<User> users = userRepository.findByOrderByCurationsCurationCountDesc();
+    public UserPopularListResDto findAllByOrderByCurationCountDesc(Pageable pageable) {
+        Page<User> users = userRepository.findAllByOrderByCurationCountDesc(pageable);
         List<UserPopularInfoResDto> userPopularInfoResDtoList = users.stream()
                 .map(UserPopularInfoResDto::from)
                 .toList();
