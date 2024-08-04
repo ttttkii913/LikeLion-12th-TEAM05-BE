@@ -71,7 +71,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
     })
-    @GetMapping("{curationId}")
+    @GetMapping("/{curationId}")
     public ApiResponseTemplate<CommentListResDto> commentFindAll(@PathVariable("curationId") Long curationId) {
         CommentListResDto commentListResDto = commentService.commentFindAll(curationId);
         return ApiResponseTemplate.successResponse(commentListResDto, SuccessCode.GET_SUCCESS);
