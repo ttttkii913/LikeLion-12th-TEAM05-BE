@@ -128,6 +128,23 @@ public class CurationService {
                 .toList();
         return CurationListResDto.from(curationInfoResDtoList);
     }
+    // 인증된 사용자 - 자신이 작성한 큐레이션 목록
+    @Transactional
+    public CurationListResDto findMyCuration(Pageable pageable, Principal principal) {
+        String email = principal.getName();
+        User user = getUserByEmail(email);
+
+        if (user.getCurationCount().equals(0)) {
+            throw new NotFoundException(ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION,
+                    ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION.getMessage());
+        }
+
+        Page<Curation> curations = curationRepository.findAll(pageable);
+        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
+                .map(CurationInfoResDto::from)
+                .toList();
+        return CurationListResDto.from(curationInfoResDtoList);
+    }
 
     // 인증된 사용자 - 마이페이지 - 자신이 좋아요 누른 큐레이션 목록(페이지네이션 6개) 조회
     @Transactional
@@ -146,7 +163,6 @@ public class CurationService {
                 .toList();
         return CurationListResDto.from(curationInfoResDtoList);
     }
-
     @Transactional
     public CurationListResDto findCommentCount(Pageable pageable) {
         Page<Curation> curations = curationRepository.findAllByOrderByCommentCountDesc(pageable);
