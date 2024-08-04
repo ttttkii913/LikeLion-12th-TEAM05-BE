@@ -1,5 +1,6 @@
 package org.likelion.likelion_12th_team05.curation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.likelion.likelion_12th_team05.comment.domain.Comment;

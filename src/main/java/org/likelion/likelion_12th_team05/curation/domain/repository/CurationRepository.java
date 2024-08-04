@@ -27,6 +27,5 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     Page<Curation> findUserLikes(User user, Pageable pageable);
 
     // 댓글이 많이 달린 6개의 큐레이션
-    @Query(value = "SELECT * FROM curation ORDER BY comment_count DESC limit 6", nativeQuery = true)
-    List<Curation> findTop6By();
+    Page<Curation> findAllByOrderByCommentCountDesc(Pageable pageable);
 }
