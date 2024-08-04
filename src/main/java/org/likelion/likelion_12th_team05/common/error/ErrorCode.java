@@ -18,6 +18,7 @@ public enum ErrorCode { // 반복적으로 사용될 Error 상태와 메세지, 
     LIKE_NOT_FOUND_EXCEPTION("좋아요를 누르지 않은 큐레이션입니다."),
     NO_AUTHORIZATION_EXCEPTION("권한이 없습니다."),
     NO_USER_LIKE_CURATIONS_EXCEPTION("아직 좋아요를 누른 큐레이션이 없습니다."),
+    NO_WRITTEN_CURATIONS_EXCEPTION("큐레이션이 없습니다."),
     /**
      * 500 INTERNAL SERVER ERROR
      */
