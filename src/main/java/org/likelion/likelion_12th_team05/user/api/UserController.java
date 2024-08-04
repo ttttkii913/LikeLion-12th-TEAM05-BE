@@ -17,6 +17,9 @@ import org.likelion.likelion_12th_team05.user.api.dto.response.UserInfoResDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserPopularListResDto;
 import org.likelion.likelion_12th_team05.user.api.dto.response.UserSignInResDto;
 import org.likelion.likelion_12th_team05.user.application.UserService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -108,8 +111,16 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "인증이 필요합니다.")
     })
     @GetMapping("/user/popular")
-    public ApiResponseTemplate<UserPopularListResDto> findByOrderByCurationsCurationCountDesc() {
-        UserPopularListResDto userPopularListResDto = userService.findByOrderByCurationsCurationCountDesc();
+    public ApiResponseTemplate<UserPopularListResDto> findAllByOrderByCurationCountDesc(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size,
+            @RequestParam(value = "sort", defaultValue = "id,asc") String sort
+    ) {
+        String[] sortParams = sort.split(",");
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        UserPopularListResDto userPopularListResDto = userService.findAllByOrderByCurationCountDesc(pageable);
         return ApiResponseTemplate.successResponse(userPopularListResDto, SuccessCode.GET_SUCCESS);
     }
 
