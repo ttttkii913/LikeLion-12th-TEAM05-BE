@@ -83,8 +83,8 @@ public class CurationService {
 
     // 모든 사용자 - 큐레이션 검색
     @Transactional
-    public CurationListResDto searchCurations(String query, Pageable pageable) {
-        Page<Curation> curations = curationRepository.findByNameContaining(query, pageable);
+    public CurationListResDto searchCurations(String query) {
+        List<Curation> curations = curationRepository.findByNameContaining(query);
         List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
                 .map(CurationInfoResDto::from)
                 .toList();

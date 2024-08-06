@@ -7,10 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CurationRepository extends JpaRepository<Curation, Long> {
-    Page<Curation> findByNameContaining(String query, Pageable pageable);
+    List<Curation> findByNameContaining(String query);
     Page<Curation> findAll(Pageable pageable);
 
     Optional<Curation> findById(Long curationId);
