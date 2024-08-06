@@ -116,16 +116,8 @@ public class CurationController {
     })
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query,
-                                                                   @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                   @RequestParam(value = "size", defaultValue = "6") int size,
-                                                                   @RequestParam(value = "sort", defaultValue = "id,asc") String sort
-    ) {
-        String[] sortParams = sort.split(",");
-        Sort sortOrder = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
-        Pageable pageable = PageRequest.of(page, size, sortOrder);
-
-        CurationListResDto searchResults = curationService.searchCurations(query, pageable);
+    public ApiResponseTemplate<CurationListResDto> searchCurations(@RequestParam String query) {
+        CurationListResDto searchResults = curationService.searchCurations(query);
         return ApiResponseTemplate.successResponse(searchResults, SuccessCode.GET_SUCCESS);
     }
 
