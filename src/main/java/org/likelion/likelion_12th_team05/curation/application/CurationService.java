@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.likelion.likelion_12th_team05.common.EntityFinder;
 import org.likelion.likelion_12th_team05.common.error.ErrorCode;
 import org.likelion.likelion_12th_team05.common.exception.NotFoundException;
-import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationSaveReqDto;
+import org.likelion.likelion_12th_team05.curation.api.dto.request.CurationUpdateReqDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationInfoResDto;
 import org.likelion.likelion_12th_team05.curation.api.dto.response.CurationListResDto;
 import org.likelion.likelion_12th_team05.curation.domain.Curation;
@@ -172,7 +172,7 @@ public class CurationService {
         return CurationListResDto.from(curationInfoResDtoList);
     }
 
-    // 반복되는 예외 반환 메서드 추출 => 공통 예외 처리로 일관성 높이기 위함 => entityfinder로 중앙 관리
+    // 반복되는 예외 반환 메서드 추출 => 공통 예외 처리로 일관성 높이기 위함 => entityFinder 로 중앙 관리
     private Curation getCurationById(Long curationId) {
         return EntityFinder.findByIdOrThrow(curationRepository.findById(curationId)
                 , ErrorCode.CURATIONS_NOT_FOUND_EXCEPTION);
