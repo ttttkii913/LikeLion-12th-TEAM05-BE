@@ -170,7 +170,7 @@ public class CurationController {
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
 
-    @Operation(summary = "인증된 사용자가 자신이 좋아요 누른 큐레이션 조회", description = "인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.")
+    @Operation(summary = "인증된 사용자가 자신이 만든 큐레이션 조회", description = "인증된 사용자가 마이페이지에서 본인이 만든 큐레이션 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
@@ -209,7 +209,7 @@ public class CurationController {
         CurationListResDto curationListResDto = curationService.findCurationUserLikes(pageable, principal);
         return ApiResponseTemplate.successResponse(curationListResDto, SuccessCode.GET_SUCCESS);
     }
-    @Operation(summary = "인증된 사용자가 자신이 좋아요 누른 큐레이션 조회", description = "인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.")
+    @Operation(summary = "큐레이션에 달린 댓글 수를 내림차순으로 조회", description = "인증된 사용자가 렌딩페이지에서 댓글이 많이 달린 6개의 큐레이션을 볼 수 있다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "응답 생성에 성공하였습니다."),
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
