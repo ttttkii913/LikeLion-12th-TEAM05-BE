@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CurationRepository extends JpaRepository<Curation, Long> {
-    Page<Curation> findByNameContaining(String query, Pageable pageable);
+    List<Curation> findByNameContaining(String query);
     Page<Curation> findAll(Pageable pageable);
 
     Optional<Curation> findById(Long curationId);
