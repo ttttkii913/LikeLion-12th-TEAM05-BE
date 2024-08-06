@@ -24,7 +24,7 @@ public class AuthLoginService {
     private String GOOGLE_CLIENT_SECRET;
 
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
-    private final String GOOGLE_REDIRECT_URI = "http://localhost:8080/login";
+    private final String GOOGLE_REDIRECT_URI = "http://localhost:5173/login";
 
     private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
