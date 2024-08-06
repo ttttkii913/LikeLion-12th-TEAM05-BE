@@ -28,4 +28,6 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     // 댓글이 많이 달린 6개의 큐레이션
     Page<Curation> findAllByOrderByCommentCountDesc(Pageable pageable);
+
+    List<Curation> findAllByUser(User user);
 }
