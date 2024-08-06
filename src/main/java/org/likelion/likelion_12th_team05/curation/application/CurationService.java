@@ -134,15 +134,21 @@ public class CurationService {
         String email = principal.getName();
         User user = getUserByEmail(email);
 
-        if (user.getCurationCount().equals(0)) {
-            throw new NotFoundException(ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION,
-                    ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION.getMessage());
-        }
+//        if (user.getCurationCount().equals(0)) {
+//            throw new NotFoundException(ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION,
+//                    ErrorCode.NO_WRITTEN_CURATIONS_EXCEPTION.getMessage());
+//        }
+//
+//        Page<Curation> curations = curationRepository.findAll(pageable);
 
-        Page<Curation> curations = curationRepository.findAll(pageable);
-        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
-                .map(CurationInfoResDto::from)
+//        List<CurationInfoResDto> curationInfoResDtoList = curations.stream()
+//                .map(CurationInfoResDto::from)
+//                .toList();
+
+        List<CurationInfoResDto> curationInfoResDtoList = curationRepository.findAllByUser(user)
+                .stream().map(CurationInfoResDto::from)
                 .toList();
+
         return CurationListResDto.from(curationInfoResDtoList);
     }
 

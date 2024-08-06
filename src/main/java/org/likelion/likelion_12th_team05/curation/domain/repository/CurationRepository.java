@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CurationRepository extends JpaRepository<Curation, Long> {
@@ -27,4 +28,6 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     // 댓글이 많이 달린 6개의 큐레이션
     Page<Curation> findAllByOrderByCommentCountDesc(Pageable pageable);
+
+    List<Curation> findAllByUser(User user);
 }
